@@ -231,6 +231,7 @@ function pickVoice(){
        || vs[0] || null;
 }
 const VOICE_TEXT = {           // fallback text if mp3 missing
+  intro:"Today we will learn the letter A.",
   announce:"A ... for ...",
 };
 function speak(text, {rate=1, pitch=1.2, vol=1, onEnd=null}={}){
@@ -359,7 +360,8 @@ document.getElementById("playBtn").addEventListener("click", ()=>{
   ensureAudio(); playMusic(); preloadClips();
   playing = true; updateStars();
   // Lovely female voice: "A ... For ..." then wait, then popping begins
-  playVoice("announce", "A ... for ...", {}, ()=> setTimeout(popWord, 1200));
+  playVoice("intro", "Today we will learn the letter A.", {}, ()=>
+    playVoice("announce", "A ... for ...", {}, ()=> setTimeout(popWord, 1200)));
 });
 </script>
 </body>

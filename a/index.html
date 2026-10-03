@@ -360,8 +360,7 @@ document.getElementById("playBtn").addEventListener("click", ()=>{
   ensureAudio(); playMusic(); preloadClips();
   playing = true; updateStars();
   // Lovely female voice: "A ... For ..." then wait, then popping begins
-  playVoice("intro", "Today we will learn the letter A.", {}, ()=>
-    playVoice("announce", "A ... for ...", {}, ()=> setTimeout(popWord, 1200)));
+  playVoice("intro", "Today we will learn the letter A.", {}, ()=> setTimeout(popWord, 800));
 });
 </script>
 </body>

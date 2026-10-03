@@ -42,7 +42,7 @@
   #bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
   #sky,#ground{z-index:0;}
   #grid,#bigA,#stars,#soundBtn,#foundBox,#stage,#stageName{z-index:5;}
-  #ground{position:absolute;left:0;right:0;bottom:0;height:72%;
+  #ground{background:transparent !important;position:absolute;left:0;right:0;bottom:0;height:72%;
     background:linear-gradient(180deg,#b7e8b7 0%,var(--grass) 30%,#6cc46c 100%);
     border-radius:45% 45% 0 0/60px 60px 0 0;}
   #grid{position:absolute;left:50%;bottom:13vmin;transform:translateX(-50%);
@@ -111,12 +111,26 @@
   .foundChip{font-size:6vmin;background:rgba(255,255,255,.75);border-radius:14px;
     padding:.5vmin 1vmin;filter:grayscale(1);opacity:.35;transition:all .4s;}
   .foundChip.got{filter:none;opacity:1;transform:scale(1.12);}
+  @media (orientation:landscape) and (min-width:900px){
+    /* popup LEFT (over open grass), playfield RIGHT over the painted 3x3 burrows */
+    #bg{object-position:right center;}
+    #stage{width:44vmin;height:44vmin;max-height:56vh;left:18%;top:52%;
+      transform:translate(-50%,-50%) scale(0);}
+    #stage.show{transform:translate(-50%,-50%) scale(1);}
+    #stageName{left:18%;top:80%;font-size:4.6vmin;}
+    .holeWrap{width:15.5vmin;height:15.5vmin;}
+    .item{font-size:9.5vmin;}
+    #grid{left:71%;transform:translateX(-50%);bottom:8vmin;gap:1.2vmin;}
+    .holeRim,.holeLip::after{box-shadow:none;}
+    #ground{background:transparent !important;}
+    #ground::before{opacity:.25;}
+  }
 </style>
 </head>
 <body>
 <div id="game">
   <div id="sky"></div>
-  <img id="bg" src="../img/bg.svg" alt="">
+  <img id="bg" src="../img/bg9.png" alt="">
   <div id="ground"></div>
   <div id="grid"></div>
 
@@ -283,8 +297,13 @@ function playVoice(key, fallbackText, opts={}, onEnd=null){
     const a = CLIPS[key];
     currentClip = a;
     a.currentTime = 0;
-    a.onended = ()=>{ restore(); if(onEnd) onEnd(); };
+    let done = false;
+    const finish = ()=>{ if(done) return; done = true;
+      restore(); if(onEnd) onEnd(); };
+    a.onended = finish;
     a.onerror = ()=>{ speak(fallbackText, {rate, pitch, onEnd}); };
+    const estMs = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+800 : 4000;
+    setTimeout(finish, estMs);
     a.play().catch(()=>{ speak(fallbackText, {rate, pitch, onEnd}); });
   } else {
     speak(fallbackText, {rate, pitch, onEnd});
@@ -396,7 +415,7 @@ function popWord(){
     setTimeout(()=>{ h.busy=false; h.item.removeEventListener("pointerdown",tap); }, 600);
     scheduleNext(3000);                        // 3-second calm gap before the next round
   }
-  });   // end onEnd callback, end playVoice()
+  })();   // run immediately (no announcement anymore)
 }
 
 document.getElementById("playBtn").addEventListener("click", ()=>{

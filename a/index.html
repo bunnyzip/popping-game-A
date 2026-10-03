@@ -42,69 +42,21 @@
   #bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
   #sky,#ground{z-index:0;}
   #grid,#bigA,#stars,#soundBtn,#foundBox,#stage,#stageName{z-index:5;}
-  #ground{position:absolute;left:0;right:0;bottom:0;height:72%;
-    background:linear-gradient(180deg,#8a6242 0%,#6b4726 30%,#4a2f16 100%);
-    border-radius:45% 45% 0 0/60px 60px 0 0;overflow:hidden;}
-  #ground::before{content:"";position:absolute;inset:0;opacity:.55;
-    background-image:
-      radial-gradient(3px 3px at 12% 22%,#3a2410 40%,transparent 41%),
-      radial-gradient(2px 2px at 34% 58%,#2c1a09 40%,transparent 41%),
-      radial-gradient(3px 3px at 57% 35%,#5b3d1e 40%,transparent 41%),
-      radial-gradient(2px 2px at 76% 71%,#33200c 40%,transparent 41%),
-      radial-gradient(3px 3px at 89% 19%,#4a3115 40%,transparent 41%),
-      radial-gradient(4px 4px at 45% 84%,#241505 40%,transparent 41%),
-      radial-gradient(2px 2px at 8% 78%,#5b3d1e 40%,transparent 41%),
-      radial-gradient(60px 8px at 30% 10%,rgba(255,236,190,.18),transparent 70%),
-      radial-gradient(80px 10px at 70% 6%,rgba(255,236,190,.14),transparent 70%),
-      radial-gradient(5px 12px at 5% 0%,#8fbf6a 30%,transparent 31%),
-      radial-gradient(5px 12px at 14% 1%,#a5d17c 30%,transparent 31%),
-      radial-gradient(5px 12px at 26% 0%,#8fbf6a 30%,transparent 31%),
-      radial-gradient(5px 12px at 39% 1%,#a5d17c 30%,transparent 31%),
-      radial-gradient(5px 12px at 52% 0%,#8fbf6a 30%,transparent 31%),
-      radial-gradient(5px 12px at 65% 1%,#a5d17c 30%,transparent 31%),
-      radial-gradient(5px 12px at 78% 0%,#8fbf6a 30%,transparent 31%),
-      radial-gradient(5px 12px at 90% 1%,#a5d17c 30%,transparent 31%);
-    background-size:180px 180px;}
-  #horizon{position:absolute;left:0;right:0;bottom:71.5%;height:12vh;pointer-events:none;
-    filter:blur(7px);opacity:.9;}
-  #horizon span{position:absolute;border-radius:50%;}
-  #sunGlow{position:absolute;inset:0;pointer-events:none;
-    background:radial-gradient(60vmin 60vmin at 12% 4%,rgba(255,244,214,.5),transparent 65%);}
-  #grid{position:absolute;left:50%;bottom:9vmin;transform:translateX(-50%);
+  #ground{background:transparent !important;position:absolute;left:0;right:0;bottom:0;height:72%;
+    background:linear-gradient(180deg,#b7e8b7 0%,var(--grass) 30%,#6cc46c 100%);
+    border-radius:45% 45% 0 0/60px 60px 0 0;}
+  #grid{position:absolute;left:50%;bottom:13vmin;transform:translateX(-50%);
     display:grid;grid-template-columns:repeat(3,1fr);gap:2.2vmin;}
   .holeWrap{position:relative;width:24vmin;height:24vmin;max-width:170px;max-height:170px;}
-  .holeRim{position:absolute;left:2%;right:2%;top:12%;bottom:2%;border-radius:50%;
-    background:linear-gradient(135deg,#a3794e 0%,#7a5530 45%,#573919 100%);
-    box-shadow:0 6px 12px rgba(0,0,0,.45), inset 3px 5px 8px rgba(255,235,200,.4),
-      inset -3px -4px 8px rgba(20,10,2,.5);}
-  .holeBack{position:absolute;left:8%;right:8%;top:16%;bottom:6%;border-radius:50%;
-    background:radial-gradient(ellipse at 50% 22%,#2a1808 0 35%,#150b02 65%,#000 100%);
-    box-shadow:inset 0 14px 26px rgba(0,0,0,.95);}
-  .holeBack::after{content:"";position:absolute;inset:0;border-radius:50%;opacity:.5;
-    background:
-      radial-gradient(2px 2px at 30% 60%,#4a3115 40%,transparent 41%),
-      radial-gradient(2px 2px at 70% 45%,#5b3d1e 40%,transparent 41%),
-      radial-gradient(3px 3px at 55% 80%,#33200c 40%,transparent 41%);}
-  .pebble{position:absolute;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%,#b7a48c,#6e5a42 70%,#4a3a28);
-    box-shadow:0 1px 2px rgba(0,0,0,.4);}
-  .castShadow{position:absolute;right:-16%;top:44%;width:46%;height:20%;border-radius:50%;
-    background:radial-gradient(ellipse,rgba(15,7,1,.55),transparent 70%);
-    opacity:0;transition:opacity .5s;pointer-events:none;}
-  .holeWrap.up .castShadow{opacity:1;}
+  .holeBack{position:absolute;left:8%;right:8%;top:16%;bottom:6%;
+    background:radial-gradient(ellipse at 50% 30%,#3d2564 0 55%,var(--hole) 72%,#7a5bb0 100%);
+    border-radius:50%;box-shadow:inset 0 10px 18px rgba(0,0,0,.55),0 6px 0 #4e9b4e;}
   .popArea{position:absolute;left:0;right:0;top:0;bottom:30%;overflow:hidden;
-    display:flex;align-items:flex-end;justify-content:center;pointer-events:none;z-index:2;}
+    display:flex;align-items:flex-end;justify-content:center;pointer-events:none;}
   .item{font-size:13vmin;line-height:1;cursor:pointer;pointer-events:auto;
     transform:translateY(120%);transition:transform .55s cubic-bezier(.34,1.45,.5,1);
-    filter:drop-shadow(-6px 8px 8px rgba(0,0,0,.35)) brightness(1.02);user-select:none;}
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,.3));user-select:none;}
   .item.up{transform:translateY(8%);}
-  .holeLip{position:absolute;left:4%;right:4%;bottom:4%;height:30%;z-index:3;pointer-events:none;
-    border-radius:50%;
-    background:linear-gradient(135deg,#a3794e 0%,#82603a 40%,#5d3d1c 100%);
-    box-shadow:0 -3px 6px rgba(0,0,0,.35), inset 2px 4px 6px rgba(255,235,200,.45),
-      inset -2px -3px 6px rgba(20,10,2,.5);}
-  .holeLip::after{content:"";position:absolute;left:10%;right:10%;top:14%;height:46%;border-radius:50%;
-    background:radial-gradient(ellipse at 50% 100%,rgba(0,0,0,.62),transparent 68%);}
   .item.bounce{animation:happy .5s ease infinite;}
   @keyframes happy{0%,100%{transform:translateY(8%) rotate(-4deg);}50%{transform:translateY(0%) rotate(4deg) scale(1.08);}}
   .itemLabel{position:absolute;left:50%;top:-4%;transform:translateX(-50%) scale(0);
@@ -136,25 +88,6 @@
     animation:sparkFly .9s ease-out forwards;}
   @keyframes sparkFly{from{opacity:1;transform:translate(0,0) scale(.6);}
     to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.4);}}
-  .dirt{position:absolute;border-radius:45% 55% 50% 50%;pointer-events:none;z-index:18;
-    background:radial-gradient(circle at 35% 30%,#7a5530,#4a2f14 75%);
-    animation:dirtFly .7s ease-out forwards;}
-  @keyframes dirtFly{
-    0%{opacity:1;transform:translate(0,0) rotate(0) scale(1);}
-    100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.4);}}
-  @media (orientation:landscape) and (min-width:900px){
-    /* popup LEFT, playfield RIGHT (tablet layout) */
-    #stage{width:46vmin;height:46vmin;max-height:60vh;left:25%;top:50%;
-      transform:translate(-50%,-50%) scale(0);}
-    #stage.show{transform:translate(-50%,-50%) scale(1);}
-    #stageName{left:25%;top:78%;font-size:5vmin;}
-    .holeWrap{width:18vmin;height:18vmin;}
-    .item{font-size:10vmin;}
-    #grid{left:62%;transform:translateX(-50%);bottom:10vmin;gap:2.4vmin;}
-  }
-  .holeWrap.rumble{animation:rumble .4s linear;}
-  @keyframes rumble{0%,100%{transform:translate(0,0);}25%{transform:translate(-2px,1px);}
-    50%{transform:translate(2px,-1px);}75%{transform:translate(-1px,-1px);}}
 
   /* ---------- big subject stage ---------- */
   #stage{position:absolute;left:50%;top:13%;transform:translate(-50%,0) scale(0);
@@ -178,13 +111,27 @@
   .foundChip{font-size:6vmin;background:rgba(255,255,255,.75);border-radius:14px;
     padding:.5vmin 1vmin;filter:grayscale(1);opacity:.35;transition:all .4s;}
   .foundChip.got{filter:none;opacity:1;transform:scale(1.12);}
+  @media (orientation:landscape) and (min-width:900px){
+    /* popup LEFT (over open grass), playfield RIGHT over the painted 3x3 burrows */
+    #bg{object-position:right center;}
+    #stage{width:44vmin;height:44vmin;max-height:56vh;left:18%;top:52%;
+      transform:translate(-50%,-50%) scale(0);}
+    #stage.show{transform:translate(-50%,-50%) scale(1);}
+    #stageName{left:18%;top:80%;font-size:4.6vmin;}
+    .holeWrap{width:15.5vmin;height:15.5vmin;}
+    .item{font-size:9.5vmin;}
+    #grid{left:71%;transform:translateX(-50%);bottom:8vmin;gap:1.2vmin;}
+    .holeRim,.holeLip::after{box-shadow:none;}
+    #ground{background:transparent !important;}
+    #ground::before{opacity:.25;}
+  }
 </style>
 </head>
 <body>
 <div id="game">
   <div id="sky"></div>
-  <img id="bg" src="../img/bg.svg" alt="">
-  <div id="horizon"></div><div id="ground"></div><div id="sunGlow"></div>
+  <img id="bg" src="../img/bg9.png" alt="">
+  <div id="ground"></div>
   <div id="grid"></div>
 
   <div id="bigA">A a</div>
@@ -233,17 +180,9 @@ const holes = [];
 for(let i=0;i<9;i++){
   const w = document.createElement("div");
   w.className = "holeWrap";
-  w.innerHTML = `<div class="holeRim"></div><div class="holeBack"></div>
+  w.innerHTML = `<div class="holeBack"></div>
     <div class="popArea"><div class="item"></div></div>
-    <div class="holeLip"></div><div class="castShadow"></div>
     <div class="itemLabel"></div>`;
-  for(let k=0;k<4;k++){
-    const pe=document.createElement("div"); pe.className="pebble";
-    const ps=1.2+Math.random()*2;
-    pe.style.cssText=`width:${ps}vmin;height:${ps*0.75}vmin;
-      left:${[2,80,40,66][k]+Math.random()*14}%;${k<2?"top":"bottom"}:${[0,0,1,2][k]+Math.random()*3}%;`;
-    w.appendChild(pe);
-  }
   grid.appendChild(w);
   holes.push({wrap:w, item:w.querySelector(".item"), label:w.querySelector(".itemLabel"),
               word:null, busy:false});
@@ -251,25 +190,6 @@ for(let i=0;i<9;i++){
 
 /* ================= DREAMY SKY ================= */
 const sky = document.getElementById("sky");
-(function decorateHorizon(){
-  const hz = document.getElementById("horizon");
-  const cols = ["#ff9aa2","#ffdac1","#ffffba","#baffc9","#bae1ff","#e2b3ff","#ffe29a"];
-  for(let i=0;i<38;i++){
-    const f=document.createElement("span");
-    const fs=1+Math.random()*2.6;
-    f.style.cssText=`width:${fs}vmin;height:${fs}vmin;left:${Math.random()*100}%;
-      top:${10+Math.random()*70}%;background:${cols[i%cols.length]};
-      box-shadow:0 0 ${fs}vmin ${cols[i%cols.length]};opacity:${.5+Math.random()*.5}`;
-    hz.appendChild(f);
-  }
-  for(let i=0;i<14;i++){
-    const g=document.createElement("span");
-    g.style.cssText=`width:.7vmin;height:${3+Math.random()*5}vmin;left:${Math.random()*100}%;
-      top:${55+Math.random()*40}%;background:#7fb069;border-radius:40%;opacity:.8`;
-    hz.appendChild(g);
-  }
-})();
-
 (function decorateSky(){
   for(let i=0;i<26;i++){
     const s = document.createElement("div");
@@ -352,7 +272,7 @@ function pickVoice(){
 }
 const VOICE_TEXT = {           // fallback text if mp3 missing
   intro:"Today we will learn the letter A.",
-  announce:"A ... for ...",
+  announce:"A for...",
 };
 function speak(text, {rate=1, pitch=1.2, vol=1, onEnd=null}={}){
   if(!("speechSynthesis" in window)){ if(onEnd) setTimeout(onEnd, 800); return; }
@@ -385,8 +305,13 @@ function playVoice(key, fallbackText, opts={}, onEnd=null){
     const a = CLIPS[key];
     currentClip = a;
     a.currentTime = 0;
-    a.onended = ()=>{ restore(); if(onEnd) onEnd(); };
+    let done = false;
+    const finish = ()=>{ if(done) return; done = true;
+      restore(); if(onEnd) onEnd(); };
+    a.onended = finish;
     a.onerror = ()=>{ speak(fallbackText, {rate, pitch, onEnd}); };
+    const estMs = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+800 : 4000;
+    setTimeout(finish, estMs);
     a.play().catch(()=>{ speak(fallbackText, {rate, pitch, onEnd}); });
   } else {
     speak(fallbackText, {rate, pitch, onEnd});
@@ -428,21 +353,6 @@ function hideBig(){
   stageName.classList.remove("show");
 }
 
-function dirtBurst(wrap){
-  const r = wrap.getBoundingClientRect();
-  const gr = document.getElementById("game");
-  for(let i=0;i<10;i++){
-    const d=document.createElement("div");
-    d.className="dirt";
-    const ds=0.8+Math.random()*1.8;
-    d.style.cssText=`width:${ds}vmin;height:${ds*0.8}vmin;
-      left:${r.left+r.width*(0.2+Math.random()*0.6)}px;top:${r.top+r.height*0.72}px;
-      --dx:${(Math.random()*180-90)}px;--dy:${-30-Math.random()*90}px;--rot:${Math.random()*720-360}deg;`;
-    gr.appendChild(d);
-    setTimeout(()=>d.remove(),750);
-  }
-}
-
 function sparkle(el, emojiList){
   const r = el.getBoundingClientRect();
   for(let i=0;i<8;i++){
@@ -470,18 +380,13 @@ function popWord(){
   const w = pool[Math.floor(Math.random()*pool.length)] || WORDS[Math.floor(Math.random()*WORDS.length)];
   recentWords.push(w.name);
   if(recentWords.length > 2) recentWords.shift();
-  // thing rises quietly; the letter line comes when the kid taps
+  // Lady announces first, THEN the thing comes out
   (()=>{
     if(!playing) return;
-    if(activeHole){ scheduleNext(1000); return; }
+    if(activeHole){ scheduleNext(1000); return; }  // something appeared meanwhile — wait
     h.word=w; h.busy=true; h.tapped=false; activeHole=h;
     h.item.textContent = w.emoji;
-    h.wrap.classList.add("rumble");
-    setTimeout(()=>{
-      h.wrap.classList.remove("rumble");
-      h.item.classList.add("up");
-      dirtBurst(h.wrap);
-    }, 420);
+    h.item.classList.add("up");
     h.label.textContent = w.name;
   const tap = ev=>{
     ev.stopPropagation();
@@ -518,7 +423,7 @@ function popWord(){
     setTimeout(()=>{ h.busy=false; h.item.removeEventListener("pointerdown",tap); }, 600);
     scheduleNext(3000);                        // 3-second calm gap before the next round
   }
-  })();
+  })();   // run immediately (no announcement anymore)
 }
 
 document.getElementById("playBtn").addEventListener("click", ()=>{

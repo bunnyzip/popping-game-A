@@ -51,10 +51,9 @@
   <div id="sky"><div class="rainbow"></div></div>
   <h1>🌈 Alphabet Pop &amp; Learn 🌈</h1>
   <div id="grid"></div>
-  <div class="lock" title="More letters coming soon!">🚧</div>
 <script>
 /* which letters have a game */
-const READY = new Set(["A"]);
+const READY = new Set("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""));
 const TOTAL = 26;
 const grid = document.getElementById("grid");
 const sky = document.getElementById("sky");
@@ -78,7 +77,7 @@ function pop(){ if(!actx) actx=new (window.AudioContext||window.webkitAudioConte
 for(let i=0;i<TOTAL;i++){
   const L = String.fromCharCode(65+i);
   const b = document.createElement("button");
-  b.className = "letter" + (READY.has(L) ? " ready" : "");
+  b.className = "letter ready";
   b.textContent = L;
   if(READY.has(L)){
     b.title = L + " game — tap to play!";

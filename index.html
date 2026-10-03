@@ -349,7 +349,7 @@ function popWord(){
     h.item.classList.remove("bounce");
     h.label.classList.remove("show");
     setTimeout(()=>{ h.busy=false; h.item.removeEventListener("pointerdown",tap); }, 600);
-    scheduleNext(2200 + Math.random()*1300);   // calm pause before the next one
+    scheduleNext(3000);                        // 3-second calm gap before the next round
   }
   });   // end onEnd callback, end playVoice()
 }

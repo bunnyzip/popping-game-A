@@ -231,7 +231,7 @@ function pickVoice(){
        || vs[0] || null;
 }
 const VOICE_TEXT = {           // fallback text if mp3 missing
-  announce:"A ... for ...", announce_q:"A ... for ... which one is it?",
+  announce:"A ... for ...",
 };
 function speak(text, {rate=1, pitch=1.2, vol=1, onEnd=null}={}){
   if(!("speechSynthesis" in window)){ if(onEnd) setTimeout(onEnd, 800); return; }
@@ -312,7 +312,7 @@ function popWord(){
   recentWords.push(w.name);
   if(recentWords.length > 2) recentWords.shift();
   // Lady announces first, THEN the thing comes out
-  playVoice(recentWords.length ? "announce_q" : "announce", "A ... for ...", {rate:.8, pitch:1.35}, ()=>{
+  playVoice("announce", "A ... for ...", {rate:.8, pitch:1.35}, ()=>{
     if(!playing) return;
     if(activeHole){ scheduleNext(1000); return; }  // something appeared meanwhile — wait
     h.word=w; h.busy=true; h.tapped=false; activeHole=h;

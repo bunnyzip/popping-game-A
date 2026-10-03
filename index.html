@@ -84,7 +84,7 @@ for(let i=0;i<TOTAL;i++){
   b.textContent = L;
   if(READY.has(L)){
     b.title = L + " game — tap to play!";
-    b.onclick = ()=>{ pop(); location.href = "a/"; };
+    b.onclick = ()=>{ pop(); location.href = L.toLowerCase() + "/"; };
   } else {
     b.title = "Coming soon!";
     b.style.opacity = ".45";

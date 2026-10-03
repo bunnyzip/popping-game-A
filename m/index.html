@@ -314,8 +314,12 @@ function speak(text, {rate=1, pitch=1.2, vol=1, onEnd=null}={}){
   if(voice) u.voice = voice;
   u.rate=rate; u.pitch=pitch; u.volume=vol; u.lang="en-US";
   if(masterGain) masterGain.gain.value = 0.05;
-  u.onend = ()=>{ if(masterGain && musicOn) masterGain.gain.value=0.16; if(onEnd) onEnd(); };
-  u.onerror = ()=>{ if(masterGain && musicOn) masterGain.gain.value=0.16; if(onEnd) onEnd(); };
+  let spokeDone = false;
+  const spokeFinish = ()=>{ if(spokeDone) return; spokeDone = true;
+    if(masterGain && musicOn) masterGain.gain.value=0.16; if(onEnd) onEnd(); };
+  u.onend = spokeFinish;
+  u.onerror = spokeFinish;
+  setTimeout(spokeFinish, Math.max(2500, text.length*90));   // never wait forever on silent TTS
   speechSynthesis.speak(u);
 }
 /* preloaded real-voice clips (Jenny neural) */
@@ -463,7 +467,7 @@ document.getElementById("playBtn").addEventListener("click", ()=>{
   ensureAudio(); playMusic(); preloadClips();
   playing = true; updateStars();
   // Lovely female voice: "A ... For ..." then wait, then popping begins
-  playVoice("intro", "Today we will learn the letter M.", {}, ()=> setTimeout(popWord, 800));
+  playVoice("intro", "Today we will learn the letter M.", {}); setTimeout(popWord, 3200);
 });
 </script>
 </body>

@@ -1,163 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta charset="UTF-8">
-<style>
-@font-face{font-family:'Comic Neue';font-style:normal;font-weight:400;src:url('../fonts/comic-400.woff2') format('woff2');}
-@font-face{font-family:'Comic Neue';font-style:normal;font-weight:700;src:url('../fonts/comic-700.woff2') format('woff2');}
-</style>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>B For... — Pop &amp; Learn</title>
 <style>
-  :root{
-    --sky1:#ffe3f3; --sky2:#d9ecff; --sky3:#fff7d9;
-    --hole:#5b3a8f; --grass:#8fd98f;
-  }
+  /* ============ BASE ============ */
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Comic Neue",cursive,sans-serif;}
-  #game{position:fixed;inset:0;overflow:hidden;}
+  html,body{width:100%;height:100%;overflow:hidden;
+    font-family:"Comic Sans MS","Comic Neue",cursive,sans-serif;
+    @font-face{font-family:'Comic Neue';src:url('../fonts/comic-400.woff2') format('woff2');}
+  }
+  #game{position:fixed;inset:0;overflow:hidden;background:#cfe3ff;}
 
-  /* ---------- dreamy sky ---------- */
-  #sky{position:absolute;inset:0;
-    background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 45%,var(--sky3) 100%);
-    transition:opacity 1s;}
-  .star{position:absolute;border-radius:50%;background:#fff;
-    box-shadow:0 0 8px 2px rgba(255,255,200,.9);
-    animation:twinkle 3s ease-in-out infinite;}
-  @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.8);}50%{opacity:1;transform:scale(1.15);}}
-  .cloud{position:absolute;background:rgba(255,255,255,.85);border-radius:50%;
-    filter:blur(1px);animation:drift linear infinite;}
-  .cloud::before,.cloud::after{content:"";position:absolute;background:inherit;border-radius:50%;}
-  .cloud::before{width:60%;height:120%;left:15%;top:-45%;}
-  .cloud::after{width:45%;height:100%;right:12%;top:-25%;}
-  @keyframes drift{from{transform:translateX(-30vw);}to{transform:translateX(130vw);}}
-  .rainbow{position:absolute;left:50%;top:6%;width:70vw;height:35vw;max-height:46vh;
-    transform:translateX(-50%);border-radius:50% 50% 0 0/100% 100% 0 0;opacity:.35;
-    background:conic-gradient(from 270deg at 50% 100%,
-      #ff9aa2 0 8deg,#ffdac1 8deg 16deg,#ffffba 16deg 24deg,#baffc9 24deg 32deg,#bae1ff 32deg 40deg,transparent 40deg);
-    -webkit-mask:radial-gradient(circle at 50% 100%,transparent 62%,#000 64%,#000 78%,transparent 80%);
-            mask:radial-gradient(circle at 50% 100%,transparent 62%,#000 64%,#000 78%,transparent 80%);}
-
-  /* ---------- ground & holes ---------- */
+  /* ============ BACKGROUND ============ */
   #bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
-  #sky,#ground{z-index:0;}
-  #grid,#bigA,#stars,#soundBtn,#foundBox,#stage,#stageName{z-index:5;}
-  #ground{background:transparent !important;position:absolute;left:0;right:0;bottom:0;height:72%;
-    background:linear-gradient(180deg,#b7e8b7 0%,var(--grass) 30%,#6cc46c 100%);
-    border-radius:45% 45% 0 0/60px 60px 0 0;}
-  #holesLayer{position:absolute;inset:0;z-index:4;pointer-events:none;}
-  .holeWrap{position:absolute;pointer-events:auto;}
-  .holeWrap{position:relative;width:24vmin;height:24vmin;max-width:170px;max-height:170px;}
-  .holeBack{position:absolute;left:8%;right:8%;top:16%;bottom:6%;
-    background:radial-gradient(ellipse at 50% 30%,#3d2564 0 55%,var(--hole) 72%,#7a5bb0 100%);
-    border-radius:50%;box-shadow:inset 0 10px 18px rgba(0,0,0,.55),0 6px 0 #4e9b4e;}
-  .popArea{position:absolute;left:6%;right:6%;top:-58%;bottom:42%;overflow:hidden;
-    display:flex;align-items:flex-end;justify-content:center;pointer-events:none;}
-  .item{font-size:6.2vmin;/*scales with hole*/font-size:min(6.2vmin,4.4vw);line-height:1;cursor:pointer;pointer-events:auto;
-    transform:translateY(120%);transition:transform .55s cubic-bezier(.34,1.45,.5,1);
-    filter:drop-shadow(0 4px 6px rgba(0,0,0,.3));user-select:none;}
-  .item.up{transform:translateY(8%);}
-  .item.bounce{animation:happy .5s ease infinite;}
-  @keyframes happy{0%,100%{transform:translateY(8%) rotate(-4deg);}50%{transform:translateY(0%) rotate(4deg) scale(1.08);}}
-  .itemLabel{position:absolute;left:50%;top:-4%;transform:translateX(-50%) scale(0);
-    background:#fff;color:#7a3fa0;padding:1vmin 2.4vmin;border-radius:999px;
-    font-size:4vmin;font-weight:bold;box-shadow:0 3px 8px rgba(0,0,0,.2);white-space:nowrap;
-    transition:transform .3s cubic-bezier(.34,1.6,.5,1);pointer-events:none;z-index:5;}
-  .itemLabel.show{transform:translateX(-50%) scale(1);}
 
-  /* ---------- HUD ---------- */
-  #bigA{position:absolute;left:2.5vmin;top:2vmin;font-size:11vmin;color:#fff;
-    text-shadow:0 0 14px #ff8ad8,0 4px 0 #d76bb5;z-index:10;}
-  #stars{position:absolute;left:2.5vmin;top:14vmin;font-size:5.5vmin;z-index:10;letter-spacing:.5vmin;}
-  #soundBtn{position:absolute;right:2.5vmin;top:2.5vmin;font-size:6.5vmin;z-index:10;
-    background:rgba(255,255,255,.7);border:none;border-radius:50%;width:11vmin;height:11vmin;cursor:pointer;}
+  /* ============ HOLES ============ */
+  #holes{position:absolute;inset:0;z-index:2;}
+  .hole{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;}
+  .hole img{position:absolute;left:0;top:0;width:100%;height:100%;
+    pointer-events:none;user-select:none;-webkit-user-drag:none;}
+  /* the FRONT lip is the sprite's lower part; it covers the item's lower half */
+  .hole .lip{clip-path:inset(48% 0 0 0);z-index:6;}
+  .popWrap{position:absolute;left:4%;right:4%;top:-78%;bottom:52%;
+    overflow:hidden;z-index:5;display:flex;align-items:flex-end;justify-content:center;}
+  .item{line-height:1;cursor:pointer;user-select:none;will-change:transform;
+    transform:translateY(130%);transition:transform .6s cubic-bezier(.3,1.4,.5,1);
+    filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));}
+  .item.up{transform:translateY(0);}
+  .item.bounce{animation:joy .55s ease-in-out infinite;}
+  @keyframes joy{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-7%) rotate(4deg) scale(1.07);}}
+  .label{position:absolute;left:50%;top:-16%;transform:translateX(-50%) scale(0);
+    background:#fff;color:#7a3fa0;padding:.6vmin 2.6vmin;border-radius:999px;
+    font-size:4.6vmin;font-weight:bold;box-shadow:0 3px 10px rgba(0,0,0,.25);
+    white-space:nowrap;z-index:8;transition:transform .3s cubic-bezier(.3,1.6,.5,1);pointer-events:none;}
+  .label.show{transform:translateX(-50%) scale(1);}
 
-  /* ---------- start screen ---------- */
-  #start{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:3vmin;
-    background:linear-gradient(180deg,rgba(255,227,243,.92),rgba(217,236,255,.92));}
-  #start h1{font-size:9vmin;color:#a24bbf;text-shadow:0 3px 0 #fff;}
-  #start p{font-size:4.2vmin;color:#6b5b95;}
-  #playBtn{font-size:7vmin;padding:2vmin 7vmin;border:none;border-radius:999px;cursor:pointer;
-    background:linear-gradient(180deg,#ff9ad5,#ff6fb5);color:#fff;
-    box-shadow:0 6px 0 #d14b8f;animation:pulse 1.6s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
+  /* ============ HUD ============ */
+  #bigA{position:absolute;left:3vmin;top:2vmin;font-size:10vmin;color:#fff;z-index:10;
+    text-shadow:0 0 14px #ff8ad8,0 4px 0 #d76bb5;}
+  #starBar{position:absolute;left:3vmin;top:13vmin;font-size:5vmin;z-index:10;letter-spacing:.5vmin;}
+  #muteBtn{position:absolute;right:3vmin;top:2.5vmin;font-size:6vmin;z-index:10;cursor:pointer;
+    background:rgba(255,255,255,.72);border:none;border-radius:50%;width:11vmin;height:11vmin;}
+  #chipBar{position:absolute;left:50%;bottom:1.6vmin;transform:translateX(-50%);z-index:10;
+    display:flex;gap:1vmin;max-width:96vw;flex-wrap:wrap;justify-content:center;}
+  .chip{font-size:5.4vmin;background:rgba(255,255,255,.78);border-radius:12px;
+    padding:.4vmin 1vmin;filter:grayscale(1);opacity:.4;transition:all .4s;}
+  .chip.got{filter:none;opacity:1;transform:scale(1.1);}
 
-  /* ---------- sparkles ---------- */
-  .spark{position:absolute;font-size:5vmin;pointer-events:none;z-index:20;
+  /* ============ BIG SUBJECT STAGE ============ */
+  #stage{position:absolute;left:50%;top:12%;transform:translate(-50%,0) scale(0);
+    width:52vmin;height:52vmin;max-height:34vh;z-index:14;pointer-events:none;
+    transition:transform .45s cubic-bezier(.3,1.5,.5,1);}
+  #stage.show{transform:translate(-50%,0) scale(1);}
+  #stage::before{content:"";position:absolute;inset:5%;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(255,255,255,.4) 55%,transparent 72%);}
+  #stage img{position:relative;width:84%;height:84%;margin:8%;
+    filter:drop-shadow(0 10px 14px rgba(0,0,0,.3));animation:wob 2.4s ease-in-out infinite;}
+  @keyframes wob{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg) scale(1.06);}}
+  #stageName{position:absolute;left:50%;top:calc(12% + 52vmin);transform:translateX(-50%) scale(0);
+    background:#fff;color:#7a3fa0;padding:1vmin 3.6vmin;border-radius:999px;font-size:5.6vmin;
+    font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,.25);z-index:14;white-space:nowrap;
+    transition:transform .35s cubic-bezier(.3,1.6,.5,1);pointer-events:none;}
+  #stageName.show{transform:translateX(-50%) scale(1);}
+
+  /* ============ FX ============ */
+  .spark{position:absolute;font-size:4.6vmin;z-index:16;pointer-events:none;
     animation:sparkFly .9s ease-out forwards;}
   @keyframes sparkFly{from{opacity:1;transform:translate(0,0) scale(.6);}
     to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.4);}}
+  .dirt{position:absolute;border-radius:45% 55% 50% 50%;z-index:9;pointer-events:none;
+    background:radial-gradient(circle at 35% 30%,#6b4a26,#3c2410 75%);
+    animation:dirtFly .7s ease-out forwards;}
+  @keyframes dirtFly{0%{opacity:1;transform:translate(0,0) rotate(0);}
+    100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.4);}}
+  .hole.rumble{animation:rumble .4s linear;}
+  @keyframes rumble{0%,100%{translate:0 0;}25%{translate:-3px 1px;}50%{translate:3px -1px;}75%{translate:-2px -1px;}}
 
-  /* ---------- big subject stage ---------- */
-  #stage{position:absolute;left:50%;top:13%;transform:translate(-50%,0) scale(0);
-    width:50vmin;height:50vmin;max-height:36vh;z-index:15;pointer-events:none;
-    transition:transform .5s cubic-bezier(.34,1.6,.5,1);}
-  #stage.show{transform:translate(-50%,0) scale(1);}
-  #stage::before{content:"";position:absolute;inset:6%;border-radius:50%;
-    background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(255,255,255,.45) 55%,transparent 72%);}
-  #stage img,#stage div{position:relative;width:86%;height:86%;margin:7%;
-    filter:drop-shadow(0 10px 16px rgba(0,0,0,.28));animation:wob 2.4s ease-in-out infinite;}
-  #stage div{display:flex;align-items:center;justify-content:center;font-size:38vmin;line-height:1;}
-  @keyframes wob{0%,100%{transform:rotate(-3deg) scale(1);}50%{transform:rotate(3deg) scale(1.06);}}
-  #stageName{position:absolute;left:50%;top:calc(13% + 50vmin);transform:translateX(-50%) scale(0);
-    background:#fff;color:#7a3fa0;padding:1.2vmin 4vmin;border-radius:999px;
-    font-size:6vmin;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,.25);z-index:15;
-    transition:transform .35s cubic-bezier(.34,1.6,.5,1);pointer-events:none;white-space:nowrap;}
-  #stageName.show{transform:translateX(-50%) scale(1);}
+  /* ============ START SCREEN ============ */
+  #start{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;gap:3vmin;
+    align-items:center;justify-content:center;text-align:center;padding:4vmin;
+    background:linear-gradient(180deg,rgba(255,231,244,.94),rgba(214,236,255,.94));}
+  #start h1{font-size:8.5vmin;color:#a24bbf;text-shadow:0 3px 0 #fff;}
+  #start p{font-size:4vmin;color:#6b5b95;}
+  #playBtn{font-size:6.6vmin;padding:2vmin 7vmin;border:none;border-radius:999px;cursor:pointer;
+    background:linear-gradient(180deg,#ff9ad5,#ff6fb5);color:#fff;
+    box-shadow:0 6px 0 #d14b8f;animation:pulse 1.6s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
 
-  /* ---------- progress ---------- */
-  #foundBox{position:absolute;right:2.5vmin;bottom:2vmin;z-index:10;display:flex;gap:1vmin;}
-  .foundChip{font-size:6vmin;background:rgba(255,255,255,.75);border-radius:14px;
-    padding:.5vmin 1vmin;filter:grayscale(1);opacity:.35;transition:all .4s;}
-  .foundChip.got{filter:none;opacity:1;transform:scale(1.12);}
+  /* ============ TABLET / LANDSCAPE ============ */
   @media (orientation:landscape) and (min-width:900px){
-    /* popup LEFT (over open grass), playfield RIGHT over the painted 3x3 burrows */
-    #bg{object-position:right center;}
-    #stage{width:44vmin;height:44vmin;max-height:56vh;left:18%;top:52%;
-      transform:translate(-50%,-50%) scale(0);}
+    .item{font-size:min(6.8vmin,7.5vw);}
+    #stage{left:22%;top:50%;transform:translate(-50%,-50%) scale(0);
+      width:58vmin;height:58vmin;max-height:62vh;}
     #stage.show{transform:translate(-50%,-50%) scale(1);}
-    #stageName{left:18%;top:80%;font-size:4.6vmin;}
-    .holeWrap{width:15.5vmin;height:15.5vmin;}
-    .item{font-size:9.5vmin;}
-    .holeRim,.holeLip::after{box-shadow:none;}
-    #ground{background:transparent !important;}
-    #ground::before{opacity:.25;}
+    #stageName{left:22%;top:76%;font-size:4.6vmin;}
   }
-
-/* holes: transparent tap targets over painted burrows */
-.holeBack{background:transparent !important;box-shadow:none !important;}
-.holeBack::after{display:none;}
-.holeWrap{pointer-events:auto;}
-  .holeImgBack,.holeImgFront{position:absolute;left:0;top:0;width:100%;height:100%;
-    object-fit:contain;pointer-events:none;user-select:none;-webkit-user-drag:none;}
-  .holeImgFront{clip-path:inset(52% 0 0 0);}   /* only the front lip covers the subject's lower part */
-  .holeWrap{pointer-events:auto;}
-  .holeBack{display:none !important;}
-  /* canonical hole wrap */
-  #holesLayer .holeWrap{position:absolute !important;pointer-events:auto;margin:0;}
 </style>
 </head>
 <body>
 <div id="game">
-  <div id="sky"></div>
-  <img id="bg" src="../img/grass_v3.png" alt="">
-  <div id="ground"></div>
-  <div id="holesLayer"></div>
-  <div id="grid"></div>
+  <img id="bg" src="../img/bg_portrait.png" alt="">
+  <div id="holes"></div>
 
   <div id="bigA">B b</div>
-  <div id="stars"></div>
-  <button id="soundBtn" title="Music on/off">🎵</button>
-  <div id="foundBox"></div>
+  <div id="starBar"></div>
+  <button id="muteBtn" title="Music on/off">🎵</button>
+  <div id="chipBar"></div>
   <div id="stage"></div>
   <div id="stageName"></div>
 
   <div id="start">
-    <h1>🌟 Pop &amp; Learn! 🌟</h1>
+    <h1>🌟 B For... 🌟</h1>
     <p>Tap the things that pop out of the holes!</p>
     <button id="playBtn">▶ Play</button>
   </div>
@@ -165,7 +123,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"></script>
 <script>
-/* ================= WORDS ================= */
+"use strict";
+/* ===================== WORDS ===================== */
 const WORDS = [
   {key:"ball", emoji:"🏀", name:"ball", say:"ball",
    desc:"A round toy you can bounce and throw."},
@@ -189,70 +148,74 @@ const WORDS = [
    desc:"A stretchy ball of air that floats up high."}
 ];
 
-/* ================= HOLES ================= */
-const HOLES_LAYER = document.getElementById("holesLayer");
-const holes = [];
-function holeLayout(){
-  const land = matchMedia("(orientation:landscape) and (min-width:900px)").matches;
-  if(land){
-    return {pos:[[30,55],[17,55],[4,55],[30,76],[17,76],[4,76],[30,94],[17,94],[4,94]],
-            right:true, w:0.125};
-  }
-  return {pos:[[14,64],[50,64],[86,64],[14,78],[50,78],[86,78],[14,91],[50,91],[86,91]],
-          right:false, w:0.28};
+/* ===================== LAYOUT ===================== */
+const holesBox = document.getElementById("holes");
+const bgEl     = document.getElementById("bg");
+const isLand   = () => matchMedia("(orientation:landscape) and (min-width:900px)").matches;
+const HOLE_IMG = "../img/hole1.png";
+
+/* hole grid as fractions of the grass area (fx, fy of full screen) */
+function gridConfig(){
+  if(isLand()) return {
+    bg:"../img/bg_landscape.png",
+    pos:[[44,34],[61,34],[78,34],[44,55],[61,55],[78,55],[44,75],[61,75],[78,75]],
+    holeW:0.125, itemScale:0.55
+  };
+  return {
+    bg:"../img/bg_portrait.png",
+    pos:[[16,56],[50,56],[84,56],[16,68],[50,68],[84,68],[16,80],[50,80],[84,80]],
+    holeW:0.25, itemScale:0.50
+  };
 }
+
+const holes = [];
 function buildHoles(){
-  HOLES_LAYER.innerHTML = "";
+  holesBox.innerHTML = "";
   holes.length = 0;
-  const lay = holeLayout();
-  const LW = HOLES_LAYER.clientWidth, LH = HOLES_LAYER.clientHeight;
-  const hw = lay.w * LW;
-  lay.pos.forEach(([fx,fy])=>{
-    const w = document.createElement("div");
-    w.className = "holeWrap";
-    const px = lay.right ? LW - fx/100*LW : fx/100*LW;
-    const py = fy/100*LH;
-    w.style.left = (px - hw/2) + "px";
-    w.style.top  = (py - hw*0.41) + "px";
-    w.style.width = hw + "px";
-    w.style.aspectRatio = "1 / 0.82";
-    w.innerHTML = `<img class="holeImgBack" src="../img/hole_sprite_s.png" alt="" draggable="false">
-      <div class="popArea"><div class="item"></div></div>
-      <img class="holeImgFront" src="../img/hole_sprite_s.png" alt="" draggable="false">
-      <div class="itemLabel"></div>`;
-    HOLES_LAYER.appendChild(w);
-    holes.push({wrap:w, item:w.querySelector(".item"), label:w.querySelector(".itemLabel"),
+  const cfg = gridConfig();
+  bgEl.src = cfg.bg;
+  const LW = innerWidth, LH = innerHeight;
+  const hw = cfg.holeW * LW;
+  cfg.pos.forEach(([fx,fy])=>{
+    const h = document.createElement("div");
+    h.className = "hole";
+    h.style.width = hw + "px";
+    h.style.height = (hw * 0.56) + "px";
+    h.style.left = (fx/100*LW) + "px";
+    h.style.top  = (fy/100*LH) + "px";
+    h.innerHTML =
+      `<img src="${HOLE_IMG}" alt="" draggable="false">
+       <div class="popWrap"><div class="item"></div></div>
+       <img class="lip" src="${HOLE_IMG}" alt="" draggable="false">
+       <div class="label"></div>`;
+    holesBox.appendChild(h);
+    holes.push({el:h, item:h.querySelector(".item"), label:h.querySelector(".label"),
                 word:null, busy:false, tapped:false});
   });
+  /* item size follows hole size */
+  document.querySelectorAll(".item").forEach(el=>{ el.style.fontSize = hw*cfg.itemScale + "px"; });
+  stagePos();
 }
-buildHoles();
-let rsT=null;
-addEventListener("resize", ()=>{ clearTimeout(rsT); rsT=setTimeout(buildHoles, 150); });
-
-/* ================= DREAMY SKY ================= */
-const sky = document.getElementById("sky");
-(function decorateSky(){
-  for(let i=0;i<26;i++){
-    const s = document.createElement("div");
-    s.className = "star";
-    const sz = 2 + Math.random()*4;
-    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*30}%;
-      animation-delay:${Math.random()*3}s`;
-    sky.appendChild(s);
+function stagePos(){
+  const st = document.getElementById("stage");
+  const nm = document.getElementById("stageName");
+  if(isLand()){
+    st.style.left = "22%"; st.style.top = "50%";
+    st.style.transform = "translate(-50%,-50%) scale(0)";
+    st.dataset.showX = "-50%"; st.dataset.showY = "-50%";
+    nm.style.left = "22%"; nm.style.top = "74%";
+  }else{
+    st.style.left = "50%"; st.style.top = "11%";
+    st.style.transform = "translate(-50%,0) scale(0)";
+    st.dataset.showX = "-50%"; st.dataset.showY = "0";
+    nm.style.left = "50%"; nm.style.top = "calc(11% + 52vmin)";
   }
-  for(let i=0;i<6;i++){
-    const c = document.createElement("div");
-    c.className = "cloud";
-    const cw = 10 + Math.random()*12;
-    c.style.cssText = `width:${cw}vw;height:${cw*0.4}vw;top:${4+Math.random()*26}%;
-      animation-duration:${45+Math.random()*50}s;animation-delay:-${Math.random()*60}s;
-      opacity:${.55+Math.random()*.35}`;
-    sky.appendChild(c);
-  }
-})();
+}
+let rsT = null;
+addEventListener("resize", ()=>{ clearTimeout(rsT); rsT = setTimeout(()=>{ buildHoles(); }, 150); });
 
-/* ================= MUSIC (WebAudio lullaby) ================= */
-let actx=null, musicOn=true, musicTimer=null, masterGain=null;
+/* ===================== MUSIC (soft lullaby) ===================== */
+let actx = null, masterGain = null, musicOn = true, musicTimer = null;
 function ensureAudio(){
   if(!actx){
     actx = new (window.AudioContext||window.webkitAudioContext)();
@@ -260,225 +223,203 @@ function ensureAudio(){
     masterGain.gain.value = 0.16;
     masterGain.connect(actx.destination);
   }
-  if(actx.state==="suspended") actx.resume();
+  if(actx.state === "suspended") actx.resume();
 }
 function note(freq, t, dur, type="sine", vol=1){
-  const o=actx.createOscillator(), g=actx.createGain();
-  o.type=type; o.frequency.value=freq;
-  g.gain.setValueAtTime(0,t);
-  g.gain.linearRampToValueAtTime(.5*vol,t+.04);
-  g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(.5*vol, t+.04);
+  g.gain.exponentialRampToValueAtTime(.001, t+dur);
   o.connect(g); g.connect(masterGain);
   o.start(t); o.stop(t+dur+.05);
 }
-/* gentle Twinkle-Twinkle style lullaby loop in C major */
-const MELODY=[ [523,1],[523,1],[784,1],[784,1],[880,1],[880,1],[784,2],
-               [698,1],[698,1],[659,1],[659,1],[587,1],[587,1],[523,2] ];
-const BEAT=0.62;
+const MELODY = [[523,1],[523,1],[784,1],[784,1],[880,1],[880,1],[784,2],
+                [698,1],[698,1],[659,1],[659,1],[587,1],[587,1],[523,2]];
+const BEAT = 0.62;
 function playMusic(){
   if(!musicOn) return;
   ensureAudio();
   let t = actx.currentTime + 0.1;
-  function loop(){
+  (function loop(){
     if(!musicOn) return;
     MELODY.forEach(([f,b])=>{
-      note(f, t, b*BEAT*0.95, "sine", .9);
-      note(f/2, t, b*BEAT*0.95, "triangle", .35); // soft bass
+      note(f, t, b*BEAT*.95, "sine", .9);
+      note(f/2, t, b*BEAT*.95, "triangle", .35);
       t += b*BEAT;
     });
-    // sparse dreamy bell notes
-    for(let i=0;i<3;i++) note([1046,1318,1568][i%3], t - (3-i)*BEAT, 1.6, "sine", .12);
     musicTimer = setTimeout(loop, (t - actx.currentTime - .05)*1000);
-  }
-  loop();
+  })();
 }
-function stopMusic(){ musicOn=false; clearTimeout(musicTimer); if(masterGain) masterGain.gain.value=0; }
-function startMusic(){ musicOn=true; if(masterGain) masterGain.gain.value=0.16; if(actx) playMusic(); }
-document.getElementById("soundBtn").addEventListener("click", e=>{
-  musicOn ? stopMusic() : startMusic();
+function duckMusic(on){ if(masterGain) masterGain.gain.value = on ? 0.05 : (musicOn ? 0.16 : 0); }
+document.getElementById("muteBtn").addEventListener("click", e=>{
+  musicOn = !musicOn;
+  if(!musicOn){ clearTimeout(musicTimer); if(masterGain) masterGain.gain.value = 0; }
+  else playMusic();
   e.target.textContent = musicOn ? "🎵" : "🔇";
 });
 
-/* ================= VOICE (real human audio files + TTS fallback) ================= */
+/* ===================== VOICE (pre-recorded + TTS fallback, never hangs) ===================== */
 let voice = null;
-const FEMALE = /zira|aria|jenny|sonia|hazel|susan|samantha|victoria|karen|moira|tessa|fiona|veena|heera|female|libby|eva|catherine/i;
-const MALE   = /david|mark|alex|daniel|george|rishi|ryan|james|male|guy|eric|brian|arthur/i;
+const FEMALE = /zira|aria|jenny|sonia|hazel|susan|samantha|karen|moira|tessa|fiona|veena|female|libby/i;
+const MALE   = /david|mark|alex|daniel|george|rishi|ryan|james|male|guy|eric|brian/i;
 function pickVoice(){
   const vs = speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
   voice = vs.find(v=>FEMALE.test(v.name) && !MALE.test(v.name))
-       || vs.find(v=>FEMALE.test(v.name))
-       || vs.find(v=>/google uk english female|google us english/i.test(v.name))
-       || vs.find(v=>!MALE.test(v.name))
-       || vs[0] || null;
+       || vs.find(v=>FEMALE.test(v.name)) || vs.find(v=>!MALE.test(v.name)) || null;
 }
-const VOICE_TEXT = {           // fallback text if mp3 missing
-  intro:"Today we will learn the letter B.",
-  announce:"B for...",
-};
-function speak(text, {rate=1, pitch=1.2, vol=1, onEnd=null}={}){
-  if(!("speechSynthesis" in window)){ if(onEnd) setTimeout(onEnd, 800); return; }
+const CLIPS = {};
+function preloadClips(){
+  CLIPS.intro = new Audio("../b/audio/intro.mp3");
+  WORDS.forEach(w=>{
+    CLIPS[w.key]    = new Audio(`../b/audio/${w.key}.mp3`);
+    CLIPS[w.key+"_d"] = new Audio(`../b/audio/${w.key}_d.mp3`);
+  });
+}
+function speak(text, opts={}, onEnd=null){
+  if(!("speechSynthesis" in window)){ if(onEnd) setTimeout(onEnd, 900); return; }
   speechSynthesis.cancel();
   if(!voice) pickVoice();
   const u = new SpeechSynthesisUtterance(text);
   if(voice) u.voice = voice;
-  u.rate=rate; u.pitch=pitch; u.volume=vol; u.lang="en-US";
-  if(masterGain) masterGain.gain.value = 0.05;
-  let spokeDone = false;
-  const spokeFinish = ()=>{ if(spokeDone) return; spokeDone = true;
-    if(masterGain && musicOn) masterGain.gain.value=0.16; if(onEnd) onEnd(); };
-  u.onend = spokeFinish;
-  u.onerror = spokeFinish;
-  setTimeout(spokeFinish, Math.max(2500, text.length*90));   // never wait forever on silent TTS
+  u.rate = opts.rate||1; u.pitch = opts.pitch||1.2; u.lang = "en-US";
+  duckMusic(true);
+  let fired = false;
+  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
+  u.onend = fin; u.onerror = fin;
+  setTimeout(fin, Math.max(2500, text.length*95));   /* hard stop: TTS can hang silently */
   speechSynthesis.speak(u);
 }
-/* preloaded real-voice clips (Jenny neural) */
-const CLIPS = {};
-function preloadClips(){
-  Object.keys(VOICE_TEXT).forEach(k=>{ CLIPS[k] = new Audio("audio/"+k+".mp3"); });
-  WORDS.forEach(w=>{
-    CLIPS[w.key]   = new Audio("audio/"+w.key+".mp3");
-    CLIPS[w.key+"_d"] = new Audio("audio/"+w.key+"_d.mp3");
-  });
-}
-let currentClip = null;
-function playVoice(key, fallbackText, opts={}, onEnd=null){
-  const {rate=1, pitch=1.2} = opts;
-  if(masterGain) masterGain.gain.value = 0.05;      // duck music while she talks
-  const restore = ()=>{ if(masterGain && musicOn) masterGain.gain.value=0.16; };
-  if(CLIPS[key] && CLIPS[key].src){
-    if(currentClip){ currentClip.pause(); }
-    const a = CLIPS[key];
-    currentClip = a;
-    a.currentTime = 0;
-    let done = false;
-    const finish = ()=>{ if(done) return; done = true;
-      restore(); if(onEnd) onEnd(); };
-    a.onended = finish;
-    a.onerror = ()=>{ speak(fallbackText, {rate, pitch, onEnd}); };
-    const estMs = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+800 : 4000;
-    setTimeout(finish, estMs);
-    a.play().catch(()=>{ speak(fallbackText, {rate, pitch, onEnd}); });
-  } else {
-    speak(fallbackText, {rate, pitch, onEnd});
-  }
+function playClip(key, fallbackText, opts={}, onEnd=null){
+  duckMusic(true);
+  const a = CLIPS[key];
+  if(!a){ speak(fallbackText, opts, onEnd); return; }
+  let fired = false;
+  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
+  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
+  setTimeout(fin, est);
+  const pr = a.play();
+  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
-/* ================= GAME LOOP ================= */
-const starsBox = document.getElementById("stars");
-const foundBox = document.getElementById("foundBox");
-let starCount=0, playing=false, roundTimer=null, activeHole=null;
-const recentWords = [];   // last 2 subjects shown — they can't repeat until 2 others came
-const found = new Set();
-const CHIPS = WORDS.map(w=>{ const c=document.createElement("div");
-  c.className="foundChip"; c.textContent=w.emoji; c.title=w.name; foundBox.appendChild(c); return c; });
-
-function updateStars(){ starsBox.textContent = "⭐".repeat(Math.min(starCount,10)); }
-
-const stage = document.getElementById("stage");
-const stageName = document.getElementById("stageName");
-function showBig(w){
-  stage.innerHTML = "";
-  const img = document.createElement("img");
-  img.alt = w.name;
-  img.src = twemojiToUrl(w.emoji);
-  stage.appendChild(img);
-  stageName.textContent = w.name;
-  stage.style.transform = "translate(-50%,0) scale(1)";
-  stageName.classList.add("show");
-}
-function twemojiToUrl(e){
-  const codes = [...e].map(c=>c.codePointAt(0).toString(16)).filter(c=>!["fe0f","200d"].includes(c) || true);
-  // proper twemoji filename: strip fe0f unless part of key — simplest: use full sequence
-  const seq = [...e].map(c=>c.codePointAt(0).toString(16)).join("-");
-  return "https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" + seq + ".svg";
-}
-function hideBig(){
-  stage.classList.remove("show");
-  stageName.classList.remove("show");
-}
-
-function sparkle(el, emojiList){
+/* ===================== FX ===================== */
+function sparkle(el){
   const r = el.getBoundingClientRect();
+  const em = ["✨","💖","🌟","🎉"];
   for(let i=0;i<8;i++){
-    const s=document.createElement("div");
-    s.className="spark"; s.textContent=emojiList[i%emojiList.length];
-    s.style.left=(r.left+r.width/2)+"px"; s.style.top=(r.top+r.height/2)+"px";
+    const s = document.createElement("div");
+    s.className = "spark"; s.textContent = em[i%em.length];
+    s.style.left = (r.left+r.width/2)+"px"; s.style.top = (r.top+r.height/2)+"px";
     s.style.setProperty("--dx",(Math.random()*220-110)+"px");
     s.style.setProperty("--dy",(-40-Math.random()*160)+"px");
     document.getElementById("game").appendChild(s);
-    setTimeout(()=>s.remove(),950);
+    setTimeout(()=>s.remove(), 950);
+  }
+}
+function dirtBurst(holeEl){
+  const r = holeEl.getBoundingClientRect();
+  for(let i=0;i<10;i++){
+    const d = document.createElement("div");
+    d.className = "dirt";
+    const sz = .8+Math.random()*1.8;
+    d.style.cssText = `width:${sz}vmin;height:${sz*.8}vmin;
+      left:${r.left+r.width*(.2+Math.random()*.6)}px;top:${r.top+r.height*.7}px;
+      --dx:${(Math.random()*180-90)}px;--dy:${-30-Math.random()*90}px;--rot:${Math.random()*720-360}deg;`;
+    document.getElementById("game").appendChild(d);
+    setTimeout(()=>d.remove(), 750);
   }
 }
 
-function scheduleNext(ms){
-  clearTimeout(roundTimer);                 // NEVER two chains at once
-  roundTimer = setTimeout(popWord, ms);
+/* ===================== BIG STAGE ===================== */
+const stage = document.getElementById("stage");
+const stageName = document.getElementById("stageName");
+function showBig(w){
+  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
+  }.svg" alt="">`;
+  stageName.textContent = w.name;
+  stage.classList.add("show"); stageName.classList.add("show");
 }
+function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
+
+/* ===================== GAME STATE ===================== */
+const starBar = document.getElementById("starBar");
+const chipBar = document.getElementById("chipBar");
+let starCount = 0, playing = false, roundTimer = null, activeHole = null;
+const recent = [], found = new Set();
+const chips = WORDS.map(w=>{
+  const c = document.createElement("div");
+  c.className = "chip"; c.textContent = w.emoji; c.title = w.name;
+  chipBar.appendChild(c); return c;
+});
+function updateStars(){ starBar.textContent = "⭐".repeat(Math.min(starCount,10)); }
+
+function scheduleNext(ms){ clearTimeout(roundTimer); roundTimer = setTimeout(popWord, ms); }
 
 function popWord(){
   if(!playing) return;
-  if(activeHole){ scheduleNext(1000); return; }   // one item on screen at a time
-  const h = holes[Math.floor(Math.random()*9)];
-  // never repeat until at least 2 different subjects came in between
-  const pool = WORDS.filter(w=>!recentWords.includes(w.name));
+  if(activeHole){ scheduleNext(1000); return; }
+  const pool = WORDS.filter(w=>!recent.includes(w.name));
   const w = pool[Math.floor(Math.random()*pool.length)] || WORDS[Math.floor(Math.random()*WORDS.length)];
-  recentWords.push(w.name);
-  if(recentWords.length > 2) recentWords.shift();
-  // Lady announces first, THEN the thing comes out
-  (()=>{
-    if(!playing) return;
-    if(activeHole){ scheduleNext(1000); return; }  // something appeared meanwhile — wait
-    h.word=w; h.busy=true; h.tapped=false; activeHole=h;
+  recent.push(w.name); if(recent.length>2) recent.shift();
+  const h = holes[Math.floor(Math.random()*holes.length)];
+  activeHole = h; h.word = w; h.busy = true; h.tapped = false;
+  h.el.classList.add("rumble");
+  setTimeout(()=>{
+    h.el.classList.remove("rumble");
     h.item.textContent = w.emoji;
     h.item.classList.add("up");
-    h.label.textContent = w.name;
-  const tap = ev=>{
+    dirtBurst(h.el);
+  }, 420);
+  roundTimer = setTimeout(()=>endRound(h), 5000+1500);   /* auto timeout */
+  h.item.addEventListener("pointerdown", onTap(h));
+}
+function onTap(h){
+  return ev=>{
     ev.stopPropagation();
-    if(h.tapped) return;              // ignore extra taps while she is talking
+    if(h.tapped || activeHole!==h) return;
     h.tapped = true;
-    h.item.removeEventListener("pointerdown",tap);
+    clearTimeout(roundTimer);
+    const w = h.word;
     h.item.classList.add("bounce");
+    h.label.textContent = w.name;
     h.label.classList.add("show");
-    showBig(w);
-    sparkle(h.item,["✨","💖","🌟","🎉"]);
-    ding();
-    if(!found.has(w.name)){ found.add(w.name); starCount++; updateStars();
-      CHIPS[WORDS.indexOf(w)].classList.add("got"); }
-    const letterLine = document.getElementById("bigA").textContent.trim()[0] + " for " + w.say;
-    speak(letterLine+"!", {rate:1.0, pitch:1.4}, ()=>
-      playVoice(w.key+"_d", w.desc, {rate:.95,pitch:1.25}, ()=>{
+    showBig(w); sparkle(h.item); ding();
+    if(!found.has(w.name)){
+      found.add(w.name); starCount++; updateStars();
+      chips[WORDS.indexOf(w)].classList.add("got");
+    }
+    speak(`${w.name}!`, {rate:1.05, pitch:1.4}, ()=>
+      playClip(w.key+"_d", w.desc, {rate:.95, pitch:1.25}, ()=>{
         h.item.classList.remove("bounce");
         h.label.classList.remove("show");
         hideBig();
-        lower(h);
+        endRound(h);
       }));
   };
-  h.item.addEventListener("pointerdown", tap);
-  // stays 5 seconds, then goes down on its own
-  roundTimer = setTimeout(()=>{ if(activeHole===h) lower(h); }, 5000);
-
-  function lower(h){
-    if(activeHole!==h) return;          // already lowered (e.g. by the tap)
-    activeHole = null;
-    clearTimeout(roundTimer);
-    hideBig();                          // popup must always close when the round ends
-    h.item.classList.remove("up");
-    h.item.classList.remove("bounce");
-    h.label.classList.remove("show");
-    setTimeout(()=>{ h.busy=false; h.item.removeEventListener("pointerdown",tap); }, 600);
-    scheduleNext(3000);                        // 3-second calm gap before the next round
-  }
-  })();   // run immediately (no announcement anymore)
+}
+function endRound(h){
+  if(activeHole !== h) return;
+  activeHole = null;
+  clearTimeout(roundTimer);
+  hideBig();
+  h.item.classList.remove("up","bounce");
+  h.label.classList.remove("show");
+  setTimeout(()=>{ h.busy = false; }, 600);
+  scheduleNext(3000);   /* 3-second calm gap */
 }
 
+/* ===================== START ===================== */
 document.getElementById("playBtn").addEventListener("click", ()=>{
-  document.getElementById("start").style.display="none";
+  document.getElementById("start").style.display = "none";
   ensureAudio(); playMusic(); preloadClips();
   playing = true; updateStars();
-  // Lovely female voice: "A ... For ..." then wait, then popping begins
-  playVoice("intro", "Today we will learn the letter B.", {}); setTimeout(popWord, 3200);
+  playClip("intro", "Today we will learn the letter B.", {});
+  setTimeout(popWord, 3400);
 });
+buildHoles();
 </script>
 </body>
 </html>

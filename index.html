@@ -112,25 +112,25 @@
 <script>
 /* ================= WORDS ================= */
 const WORDS = [
-  {emoji:"🍎", name:"Apple",      say:"Apple",
+  {key:"apple", emoji:"🍎", name:"Apple",      say:"Apple",
    desc:"A sweet, crunchy red, green, or yellow fruit."},
-  {emoji:"🐜", name:"Ant",        say:"Ant",
+  {key:"ant", emoji:"🐜", name:"Ant",        say:"Ant",
    desc:"A tiny bug that works hard in a line."},
-  {emoji:"✈️", name:"Airplane",   say:"Airplane",
+  {key:"airplane", emoji:"✈️", name:"Airplane",   say:"Airplane",
    desc:"A big machine that flies high in the sky."},
-  {emoji:"🐊", name:"Alligator",  say:"Alligator",
+  {key:"alligator", emoji:"🐊", name:"Alligator",  say:"Alligator",
    desc:"A large animal with big teeth that lives in water."},
-  {emoji:"💪", name:"Arm",        say:"Arm",
+  {key:"arm", emoji:"💪", name:"Arm",        say:"Arm",
    desc:"The part of your body you use to wave hello."},
-  {emoji:"🪓", name:"Axe",        say:"Axe",
+  {key:"axe", emoji:"🪓", name:"Axe",        say:"Axe",
    desc:"A tool with a sharp edge for chopping wood."},
-  {emoji:"⚓", name:"Anchor",     say:"Anchor",
+  {key:"anchor", emoji:"⚓", name:"Anchor",     say:"Anchor",
    desc:"A heavy hook that keeps a boat from floating away."},
-  {emoji:"🥑", name:"Avocado",    say:"Avocado",
+  {key:"avocado", emoji:"🥑", name:"Avocado",    say:"Avocado",
    desc:"A soft green fruit that is yummy and creamy."},
-  {emoji:"🚑", name:"Ambulance",  say:"Ambulance",
+  {key:"ambulance", emoji:"🚑", name:"Ambulance",  say:"Ambulance",
    desc:"A special van that rushes to help people."},
-  {emoji:"🎨", name:"Art",        say:"Art",
+  {key:"art", emoji:"🎨", name:"Art",        say:"Art",
    desc:"Beautiful pictures and paintings made with love."},
 ];
 
@@ -218,7 +218,7 @@ document.getElementById("soundBtn").addEventListener("click", e=>{
   e.target.textContent = musicOn ? "🎵" : "🔇";
 });
 
-/* ================= VOICE ================= */
+/* ================= VOICE (real human audio files + TTS fallback) ================= */
 let voice = null;
 const FEMALE = /zira|aria|jenny|sonia|hazel|susan|samantha|victoria|karen|moira|tessa|fiona|veena|heera|female|libby|eva|catherine/i;
 const MALE   = /david|mark|alex|daniel|george|rishi|ryan|james|male|guy|eric|brian|arthur/i;
@@ -228,23 +228,48 @@ function pickVoice(){
        || vs.find(v=>FEMALE.test(v.name))
        || vs.find(v=>/google uk english female|google us english/i.test(v.name))
        || vs.find(v=>!MALE.test(v.name))
-       || vs[0] || null;   // last resort: any English voice
+       || vs[0] || null;
 }
-if("speechSynthesis" in window){
-  pickVoice();
-  speechSynthesis.onvoiceschanged = pickVoice;
-}
-function speak(text, {rate=1, pitch=1.2, vol=1, onEnd=null, duckMusic=true}={}){
+const VOICE_TEXT = {           // fallback text if mp3 missing
+  announce:"A ... for ...", announce_q:"A ... for ... which one is it?",
+};
+function speak(text, {rate=1, pitch=1.2, vol=1, onEnd=null}={}){
   if(!("speechSynthesis" in window)){ if(onEnd) setTimeout(onEnd, 800); return; }
-  speechSynthesis.cancel();                      // one voice at a time — ever
-  if(!voice) pickVoice();                        // voices may load late — retry here
+  speechSynthesis.cancel();
+  if(!voice) pickVoice();
   const u = new SpeechSynthesisUtterance(text);
   if(voice) u.voice = voice;
   u.rate=rate; u.pitch=pitch; u.volume=vol; u.lang="en-US";
-  if(duckMusic && masterGain) masterGain.gain.value = 0.05;   // music soft while talking
+  if(masterGain) masterGain.gain.value = 0.05;
   u.onend = ()=>{ if(masterGain && musicOn) masterGain.gain.value=0.16; if(onEnd) onEnd(); };
   u.onerror = ()=>{ if(masterGain && musicOn) masterGain.gain.value=0.16; if(onEnd) onEnd(); };
   speechSynthesis.speak(u);
+}
+/* preloaded real-voice clips (Jenny neural) */
+const CLIPS = {};
+function preloadClips(){
+  Object.keys(VOICE_TEXT).forEach(k=>{ CLIPS[k] = new Audio("audio/"+k+".mp3"); });
+  WORDS.forEach(w=>{
+    CLIPS[w.key]   = new Audio("audio/"+w.key+".mp3");
+    CLIPS[w.key+"_d"] = new Audio("audio/"+w.key+"_d.mp3");
+  });
+}
+let currentClip = null;
+function playVoice(key, fallbackText, opts={}, onEnd=null){
+  const {rate=1, pitch=1.2} = opts;
+  if(masterGain) masterGain.gain.value = 0.05;      // duck music while she talks
+  const restore = ()=>{ if(masterGain && musicOn) masterGain.gain.value=0.16; };
+  if(CLIPS[key] && CLIPS[key].src){
+    if(currentClip){ currentClip.pause(); }
+    const a = CLIPS[key];
+    currentClip = a;
+    a.currentTime = 0;
+    a.onended = ()=>{ restore(); if(onEnd) onEnd(); };
+    a.onerror = ()=>{ speak(fallbackText, {rate, pitch, onEnd}); };
+    a.play().catch(()=>{ speak(fallbackText, {rate, pitch, onEnd}); });
+  } else {
+    speak(fallbackText, {rate, pitch, onEnd});
+  }
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -287,7 +312,7 @@ function popWord(){
   recentWords.push(w.name);
   if(recentWords.length > 2) recentWords.shift();
   // Lady announces first, THEN the thing comes out
-  speak("A ... for ...", {rate:.8, pitch:1.35, onEnd:()=>{
+  playVoice(recentWords.length ? "announce_q" : "announce", "A ... for ...", {rate:.8, pitch:1.35}, ()=>{
     if(!playing) return;
     if(activeHole){ scheduleNext(1000); return; }  // something appeared meanwhile — wait
     h.word=w; h.busy=true; h.tapped=false; activeHole=h;
@@ -305,12 +330,12 @@ function popWord(){
     ding();
     if(!found.has(w.name)){ found.add(w.name); starCount++; updateStars();
       CHIPS[WORDS.indexOf(w)].classList.add("got"); }
-    speak(w.say+"!", {rate:1.1,pitch:1.45,onEnd:()=>
-      speak(w.desc,{rate:.95,pitch:1.25,onEnd:()=>{
+    playVoice(w.key, w.say+"!", {rate:1.1,pitch:1.45}, ()=>
+      playVoice(w.key+"_d", w.desc, {rate:.95,pitch:1.25}, ()=>{
         h.item.classList.remove("bounce");
         h.label.classList.remove("show");
         lower(h);
-      }})});
+      }));
   };
   h.item.addEventListener("pointerdown", tap);
   // stays 5 seconds, then goes down on its own
@@ -326,16 +351,15 @@ function popWord(){
     setTimeout(()=>{ h.busy=false; h.item.removeEventListener("pointerdown",tap); }, 600);
     scheduleNext(2200 + Math.random()*1300);   // calm pause before the next one
   }
-  }});   // end onEnd callback, end options, end speak()
+  });   // end onEnd callback, end playVoice()
 }
 
 document.getElementById("playBtn").addEventListener("click", ()=>{
   document.getElementById("start").style.display="none";
-  ensureAudio(); playMusic();
+  ensureAudio(); playMusic(); preloadClips();
   playing = true; updateStars();
   // Lovely female voice: "A ... For ..." then wait, then popping begins
-  speak("A", {rate:.7, pitch:1.35, onEnd:()=>
-    speak("For...", {rate:.75, pitch:1.3, onEnd:()=> setTimeout(popWord, 1200)})});
+  playVoice("announce", "A ... for ...", {}, ()=> setTimeout(popWord, 1200));
 });
 </script>
 </body>

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta charset="UTF-8">
 <style>
 @font-face{font-family:'Comic Neue';font-style:normal;font-weight:400;src:url('../fonts/comic-400.woff2') format('woff2');}
@@ -134,7 +137,7 @@
 <body>
 <div id="game">
   <div id="sky"></div>
-  <img id="bg" src="../img/bg9_square_ext.png" alt="">
+  <img id="bg" src="../img/bg_v2_square.png" alt="">
   <div id="ground"></div>
   <div id="holesLayer"></div>
   <div id="grid"></div>
@@ -181,17 +184,30 @@ const WORDS = [
 
 /* ================= HOLES ================= */
 const HOLES_LAYER = document.getElementById("holesLayer");
+function applyOrientation(){
+  const land = matchMedia("(orientation:landscape) and (min-width:900px)").matches;
+  const bg = document.getElementById("bg");
+  const want = land ? "../img/bg_v2_wide.png" : "../img/bg_v2_square.png";
+  if(!bg.src.endsWith(want)) bg.src = want;
+}
+applyOrientation();
+addEventListener("resize", ()=>{ applyOrientation(); });
 const holes = [];
 // centers measured from the AI background image (percent of visible frame)
 const LAND = matchMedia("(orientation:landscape) and (min-width:900px)").matches;
-const CENTERS = LAND
- ? [[59,38],[73,38],[87,38],[59,57],[73,57],[87,57],[59,79],[73,79],[87,79]]
- : [[12,33],[50,33],[88,33],[12,52],[50,52],[88,52],[12,70],[50,70],[88,70]];
-const HOLE_W = LAND ? 16 : 31;   // percent of frame width
+let CENTERS, HOLE_W;
+if(LAND){
+  // wide bg is right-anchored: position from RIGHT edge
+  CENTERS = [[34,38],[20,38],[6,38],[34,58],[20,58],[6,58],[34,79],[20,79],[6,79]];
+  HOLE_W = 13;   // percent of frame width
+}else{
+  CENTERS = [[12,33],[50,33],[88,33],[12,52],[50,52],[88,52],[12,70],[50,70],[88,70]];
+  HOLE_W = 31;
+}
 CENTERS.forEach(([cx,cy])=>{
   const w = document.createElement("div");
   w.className = "holeWrap";
-  w.style.left = cx + "%";
+  if(LAND){ w.style.right = cx + "%"; } else { w.style.left = cx + "%"; }
   w.style.top  = cy + "%";
   w.style.width  = HOLE_W + "%";
   w.style.aspectRatio = "1 / 0.82";

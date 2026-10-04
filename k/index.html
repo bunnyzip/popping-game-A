@@ -47,8 +47,7 @@
   #starBar{position:absolute;left:3vmin;top:13vmin;font-size:5vmin;z-index:10;letter-spacing:.5vmin;}
   #muteBtn{position:absolute;right:3vmin;top:2.5vmin;font-size:6vmin;z-index:10;cursor:pointer;
     background:rgba(255,255,255,.72);border:none;border-radius:50%;width:11vmin;height:11vmin;}
-  #chipBar{position:absolute;left:50%;bottom:1.6vmin;transform:translateX(-50%);z-index:10;
-    display:flex;gap:1vmin;max-width:96vw;flex-wrap:wrap;justify-content:center;}
+  #chipBar{display:none;position:absolute;left:50%;bottom:1.6vmin;transform:translateX(-50%);z-index:10;gap:1vmin;max-width:96vw;flex-wrap:wrap;justify-content:center;}
   .chip{font-size:5.4vmin;background:rgba(255,255,255,.78);border-radius:12px;
     padding:.4vmin 1vmin;filter:grayscale(1);opacity:.4;transition:all .4s;}
   .chip.got{filter:none;opacity:1;transform:scale(1.1);}
@@ -357,11 +356,7 @@ const starBar = document.getElementById("starBar");
 const chipBar = document.getElementById("chipBar");
 let starCount = 0, playing = false, roundTimer = null, activeHole = null;
 const recent = [], found = new Set();
-const chips = WORDS.map(w=>{
-  const c = document.createElement("div");
-  c.className = "chip"; c.textContent = w.emoji; c.title = w.name;
-  chipBar.appendChild(c); return c;
-});
+const chips = WORDS.map(()=>null);  /* item tray removed */
 function updateStars(){ starBar.textContent = "⭐".repeat(Math.min(starCount,10)); }
 
 function scheduleNext(ms){ clearTimeout(roundTimer); roundTimer = setTimeout(popWord, ms); }
@@ -401,7 +396,7 @@ function onTap(h){
     showBig(w); sparkle(h.item); ding();
     if(!found.has(w.name)){
       found.add(w.name); starCount++; updateStars();
-      chips[WORDS.indexOf(w)].classList.add("got");
+      const chipEl = chips[WORDS.indexOf(w)]; if(chipEl) chipEl.classList.add("got");
     }
     speak(`${w.name}!`, {rate:1.05, pitch:1.4}, ()=>
       playClip(w.key+"_d", w.desc, {rate:.95, pitch:1.25}, ()=>{

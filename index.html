@@ -60,6 +60,7 @@
   <h1>🌈 Alphabet Pop &amp; Learn 🌈</h1>
   <div id="grid"></div>
 <script>
+const BUILD = 3;
 /* which letters have a game */
 const READY = new Set("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""));
 const TOTAL = 26;
@@ -89,7 +90,7 @@ for(let i=0;i<TOTAL;i++){
   b.textContent = L;
   if(READY.has(L)){
     b.title = L + " game — tap to play!";
-    b.onclick = ()=>{ pop(); location.href = L.toLowerCase() + "/"; };
+    b.onclick = ()=>{ pop(); location.href = L.toLowerCase() + "/?v=" + BUILD; };
   } else {
     b.title = "Coming soon!";
     b.style.opacity = ".45";

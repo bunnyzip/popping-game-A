@@ -356,7 +356,7 @@ function popWord(){
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);
-  roundTimer = setTimeout(()=>endRound(h), 5000+1500);   /* auto timeout */
+  roundTimer = setTimeout(()=>endRound(h), 10000);   /* auto timeout */
   h.item.addEventListener("pointerdown", onTap(h));
 }
 function onTap(h){

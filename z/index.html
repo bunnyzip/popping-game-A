@@ -373,12 +373,12 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    if(w.img){ const fs = parseFloat(h.item.style.fontSize)||60; h.item.innerHTML = `<img src="${w.img}" style="width:${fs*1.15}px;height:auto;pointer-events:none" draggable="false">`; }
+    if(w.img){ const fs = parseFloat(h.item.style.fontSize)||60; h.item.innerHTML = `<img src="${w.img}?v=3" style="width:${fs*1.15}px;height:auto;pointer-events:none" draggable="false">`; }
     else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);
-  roundTimer = setTimeout(()=>endRound(h), 5000+1500);   /* auto timeout */
+  roundTimer = setTimeout(()=>endRound(h), 10000);   /* auto timeout */
   h.item.addEventListener("pointerdown", onTap(h));
 }
 function onTap(h){

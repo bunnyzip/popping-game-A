@@ -29,8 +29,10 @@
   .popWrap{position:absolute;left:4%;right:4%;top:-78%;bottom:52%;
     overflow:hidden;z-index:5;display:flex;align-items:flex-end;justify-content:center;}
   .item{line-height:1;cursor:pointer;user-select:none;will-change:transform;
+    display:flex;align-items:flex-end;justify-content:center;
     transform:translateY(130%);transition:transform .6s cubic-bezier(.3,1.4,.5,1);
     filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));}
+  .item img{width:100%;height:auto;pointer-events:none;user-select:none;-webkit-user-drag:none;}
   .item.up{transform:translateY(0);}
   .item.bounce{animation:joy .55s ease-in-out infinite;}
   @keyframes joy{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-7%) rotate(4deg) scale(1.07);}}
@@ -356,9 +358,10 @@ function showBig(w){
     [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
   stage.innerHTML =
     `<div class="emojiFallback">${w.emoji}</div>
-     <img src="${url}" alt="" onerror="this.remove()">`;
+     <img src="${url}" alt="" onload="if(this.previousElementSibling)this.previousElementSibling.style.display='none'" onerror="if(this.previousElementSibling)this.previousElementSibling.style.display='none'">`;
   stageName.textContent = w.name;
   setStageShown(true); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ setStageShown(false); stageName.classList.remove("show"); }
 
@@ -387,7 +390,7 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    if(w.img){ const fs = parseFloat(h.item.style.fontSize)||60; h.item.innerHTML = `<img src="${w.img}" style="width:${fs*1.15}px;height:auto;pointer-events:none" draggable="false">`; }
     else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);

@@ -29,8 +29,10 @@
   .popWrap{position:absolute;left:4%;right:4%;top:-78%;bottom:52%;
     overflow:hidden;z-index:5;display:flex;align-items:flex-end;justify-content:center;}
   .item{line-height:1;cursor:pointer;user-select:none;will-change:transform;
+    display:flex;align-items:flex-end;justify-content:center;
     transform:translateY(130%);transition:transform .6s cubic-bezier(.3,1.4,.5,1);
     filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));}
+  .item img{width:100%;height:auto;pointer-events:none;user-select:none;-webkit-user-drag:none;}
   .item.up{transform:translateY(0);}
   .item.bounce{animation:joy .55s ease-in-out infinite;}
   @keyframes joy{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-7%) rotate(4deg) scale(1.07);}}

@@ -59,7 +59,9 @@
   #stage.show{transform:translate(-50%,0) scale(1);}
   #stage::before{content:"";position:absolute;inset:5%;border-radius:50%;
     background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(255,255,255,.4) 55%,transparent 72%);}
-  #stage img{position:relative;width:84%;height:84%;margin:8%;
+  #stage .emojiFallback{position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;font-size:34vmin;}
+  #stage img{position:relative;width:84%;height:84%;margin:8%;background:transparent;
     filter:drop-shadow(0 10px 14px rgba(0,0,0,.3));animation:wob 2.4s ease-in-out infinite;}
   @keyframes wob{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg) scale(1.06);}}
   #stageName{position:absolute;left:50%;top:calc(12% + 52vmin);transform:translateX(-50%) scale(0);
@@ -146,7 +148,7 @@ const WORDS = [
    desc:"A sticky net a spider weaves."},
   {key:"wood", big:"../img/items/w/Wood.png", emoji:"🪵", name:"wood", say:"wood",
    desc:"The hard stuff trees are made of."}
-];
+];;
 
 /* ===================== LAYOUT ===================== */
 const holesBox = document.getElementById("holes");
@@ -163,7 +165,7 @@ function gridConfig(){
   };
   return {
     bg:"../img/bg_portrait.png",
-    pos:[[16,56],[50,56],[84,56],[16,68],[50,68],[84,68],[16,80],[50,80],[84,80]],
+    pos:[[16,50],[50,50],[84,50],[16,62],[50,62],[84,62],[16,74],[50,74],[84,74]],
     holeW:0.25, itemScale:0.50
   };
 }
@@ -204,6 +206,7 @@ function stagePos(){
     st.style.transform = "translate(-50%,-50%) scale(0)";
     st.dataset.showX = "-50%"; st.dataset.showY = "-50%";
     nm.style.left = "22%"; nm.style.top = "74%";
+    st.style.transform = "translate(-50%,-50%) scale(0)";
   }else{
     st.style.left = "50%"; st.style.top = "11%";
     st.style.transform = "translate(-50%,0) scale(0)";
@@ -335,6 +338,10 @@ function dirtBurst(holeEl){
 /* ===================== BIG STAGE ===================== */
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
+function setStageShown(shown){
+  const t = isLand() ? "translate(-50%,-50%)" : "translate(-50%,0)";
+  stage.style.transform = `${t} scale(${shown?1:0})`;
+}
 function showBig(w){
   if(activeHole){ activeHole.el.style.visibility = "hidden";
                    activeHole.label.classList.remove("show"); }
@@ -342,9 +349,9 @@ function showBig(w){
     [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
   stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
-  stage.classList.add("show"); stageName.classList.add("show");
+  setStageShown(true); stageName.classList.add("show");
 }
-function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
+function hideBig(){ setStageShown(false); stageName.classList.remove("show"); }
 
 /* ===================== GAME STATE ===================== */
 const starBar = document.getElementById("starBar");

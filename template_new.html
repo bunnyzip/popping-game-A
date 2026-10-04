@@ -315,6 +315,8 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
+  if(activeHole){ activeHole.el.style.visibility = "hidden";
+                   activeHole.label.classList.remove("show"); }
   stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
     [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
   }.svg" alt="">`;
@@ -384,6 +386,7 @@ function endRound(h){
   activeHole = null;
   clearTimeout(roundTimer);
   hideBig();
+  h.el.style.visibility = "visible";
   h.item.classList.remove("up","bounce");
   h.label.classList.remove("show");
   setTimeout(()=>{ h.busy = false; }, 600);

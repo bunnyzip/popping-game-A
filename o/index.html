@@ -126,23 +126,23 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"orange", emoji:"🍊", name:"orange", say:"orange",
+  {key:"orange", big:"../img/items/o/Orange.png", emoji:"🍊", name:"orange", say:"orange",
    desc:"A round juicy fruit."},
-  {key:"octopus", emoji:"🐙", name:"octopus", say:"octopus",
+  {key:"octopus", big:"../img/items/o/Octopus.png", emoji:"🐙", name:"octopus", say:"octopus",
    desc:"It has eight wiggly arms."},
-  {key:"owl", emoji:"🦉", name:"owl", say:"owl",
+  {key:"owl", big:"../img/items/o/Owl.png", emoji:"🦉", name:"owl", say:"owl",
    desc:"A wise bird that hoots at night."},
-  {key:"onion", emoji:"🧅", name:"onion", say:"onion",
+  {key:"onion", big:"../img/items/o/Onion.png", emoji:"🧅", name:"onion", say:"onion",
    desc:"A layered vegetable that can make you cry."},
-  {key:"ocean", emoji:"🌊", name:"ocean", say:"ocean",
+  {key:"ocean", big:"../img/items/o/Ocean.png", emoji:"🌊", name:"ocean", say:"ocean",
    desc:"The huge salty sea."},
-  {key:"ox", emoji:"🐂", name:"ox", say:"ox",
+  {key:"ox", big:"../img/items/o/Ox.png", emoji:"🐂", name:"ox", say:"ox",
    desc:"A strong bull that pulls heavy loads."},
-  {key:"olive", emoji:"🫒", name:"olive", say:"olive",
+  {key:"olive", big:"../img/items/o/Olive.png", emoji:"🫒", name:"olive", say:"olive",
    desc:"A small green fruit pressed into oil."},
-  {key:"one", emoji:"1️⃣", name:"one", say:"one",
+  {key:"one", big:"../img/items/o/One.png", emoji:"1️⃣", name:"one", say:"one",
    desc:"The very first number."},
-  {key:"oval", emoji:"⭕", name:"oval", say:"oval",
+  {key:"oval", big:"../img/items/o/Oval.png", emoji:"⭕", name:"oval", say:"oval",
    desc:"A circle stretched like an egg."}
 ];
 
@@ -334,9 +334,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

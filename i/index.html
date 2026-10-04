@@ -126,23 +126,23 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"ice_cream", emoji:"🍦", name:"ice cream", say:"ice cream",
+  {key:"ice_cream", big:"../img/items/i/Ice_cream.png", emoji:"🍦", name:"ice cream", say:"ice cream",
    desc:"A cold creamy sweet treat in a cone."},
-  {key:"ice", emoji:"🧊", name:"ice", say:"ice",
+  {key:"ice", big:"../img/items/i/Ice.png", emoji:"🧊", name:"ice", say:"ice",
    desc:"Frozen water, cold and slippery."},
-  {key:"island", emoji:"🏝️", name:"island", say:"island",
+  {key:"island", big:"../img/items/i/Island.png", emoji:"🏝️", name:"island", say:"island",
    desc:"A piece of land surrounded by water."},
-  {key:"insect", emoji:"🐜", name:"insect", say:"insect",
+  {key:"insect", big:"../img/items/i/Insect.png", emoji:"🐜", name:"insect", say:"insect",
    desc:"A tiny bug with six legs."},
-  {key:"ink", emoji:"🖋️", name:"ink", say:"ink",
+  {key:"ink", big:"../img/items/i/Ink.png", emoji:"🖋️", name:"ink", say:"ink",
    desc:"The liquid inside a pen."},
-  {key:"igloo", emoji:"🛖", name:"igloo", say:"igloo",
+  {key:"igloo", big:"../img/items/i/Igloo.png", emoji:"🛖", name:"igloo", say:"igloo",
    desc:"A little house built from snow."},
-  {key:"idea", emoji:"💡", name:"idea", say:"idea",
+  {key:"idea", big:"../img/items/i/Idea.png", emoji:"💡", name:"idea", say:"idea",
    desc:"A bright thought in your head."},
-  {key:"invitation", emoji:"💌", name:"invitation", say:"invitation",
+  {key:"invitation", big:"../img/items/i/Invitation.png", emoji:"💌", name:"invitation", say:"invitation",
    desc:"A card that asks you to a party."},
-  {key:"instrument", emoji:"🎻", name:"instrument", say:"instrument",
+  {key:"instrument", big:"../img/items/i/Instrument.png", emoji:"🎻", name:"instrument", say:"instrument",
    desc:"Something you play to make music."}
 ];
 
@@ -334,9 +334,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

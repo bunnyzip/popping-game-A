@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"penguin", emoji:"🐧", name:"penguin", say:"penguin",
+  {key:"penguin", big:"../img/items/p/Penguin.png", emoji:"🐧", name:"penguin", say:"penguin",
    desc:"A tuxedo bird that waddles and swims."},
-  {key:"pig", emoji:"🐷", name:"pig", say:"pig",
+  {key:"pig", big:"../img/items/p/Pig.png", emoji:"🐷", name:"pig", say:"pig",
    desc:"A pink farm animal that says oink."},
-  {key:"pizza", emoji:"🍕", name:"pizza", say:"pizza",
+  {key:"pizza", big:"../img/items/p/Pizza.png", emoji:"🍕", name:"pizza", say:"pizza",
    desc:"A cheesy round pie with toppings."},
-  {key:"pencil", emoji:"✏️", name:"pencil", say:"pencil",
+  {key:"pencil", big:"../img/items/p/Pencil.png", emoji:"✏️", name:"pencil", say:"pencil",
    desc:"You write and draw with it."},
-  {key:"pear", emoji:"🍐", name:"pear", say:"pear",
+  {key:"pear", big:"../img/items/p/Pear.png", emoji:"🍐", name:"pear", say:"pear",
    desc:"A sweet fruit shaped like a teardrop."},
-  {key:"pineapple", emoji:"🍍", name:"pineapple", say:"pineapple",
+  {key:"pineapple", big:"../img/items/p/Pineapple.png", emoji:"🍍", name:"pineapple", say:"pineapple",
    desc:"A spiky fruit that is sweet inside."},
-  {key:"pumpkin", emoji:"🎃", name:"pumpkin", say:"pumpkin",
+  {key:"pumpkin", big:"../img/items/p/Pumpkin.png", emoji:"🎃", name:"pumpkin", say:"pumpkin",
    desc:"A big orange gourd for halloween."},
-  {key:"panda", emoji:"🐼", name:"panda", say:"panda",
+  {key:"panda", big:"../img/items/p/Panda.png", emoji:"🐼", name:"panda", say:"panda",
    desc:"A black and white bear that munches bamboo."},
-  {key:"plane", emoji:"✈️", name:"plane", say:"plane",
+  {key:"plane", big:"../img/items/p/Plane.png", emoji:"✈️", name:"plane", say:"plane",
    desc:"It flies you across the sky."},
-  {key:"present", emoji:"🎁", name:"present", say:"present",
+  {key:"present", big:"../img/items/p/Present.png", emoji:"🎁", name:"present", say:"present",
    desc:"A wrapped surprise for someone special."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

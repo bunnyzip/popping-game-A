@@ -128,25 +128,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"apple",     emoji:"🍎", name:"Apple",     say:"Apple",
+  {key:"apple", big:"../img/items/a/Apple.png",     emoji:"🍎", name:"Apple",     say:"Apple",
    desc:"A sweet, crunchy red, green, or yellow fruit."},
-  {key:"ant",       emoji:"🐜", name:"Ant",       say:"Ant",
+  {key:"ant", big:"../img/items/a/Ant.png",       emoji:"🐜", name:"Ant",       say:"Ant",
    desc:"A tiny bug that works hard in a line."},
-  {key:"airplane",  emoji:"✈️", name:"Airplane",  say:"Airplane",
+  {key:"airplane", big:"../img/items/a/Airplane.png",  emoji:"✈️", name:"Airplane",  say:"Airplane",
    desc:"A big machine that flies high in the sky."},
-  {key:"alligator", emoji:"🐊", name:"Alligator", say:"Alligator",
+  {key:"alligator", big:"../img/items/a/Alligator.png", emoji:"🐊", name:"Alligator", say:"Alligator",
    desc:"A large animal with big teeth that lives in water."},
-  {key:"arm",       emoji:"💪", name:"Arm",       say:"Arm",
+  {key:"arm", big:"../img/items/a/Arm.png",       emoji:"💪", name:"Arm",       say:"Arm",
    desc:"The part of your body you use to wave hello."},
-  {key:"axe",       emoji:"🪓", name:"Axe",       say:"Axe",
+  {key:"axe", big:"../img/items/a/Axe.png",       emoji:"🪓", name:"Axe",       say:"Axe",
    desc:"A tool with a sharp edge for chopping wood."},
-  {key:"anchor",    emoji:"⚓", name:"Anchor",    say:"Anchor",
+  {key:"anchor", big:"../img/items/a/Anchor.png",    emoji:"⚓", name:"Anchor",    say:"Anchor",
    desc:"A heavy hook that keeps a boat from floating away."},
-  {key:"avocado",   emoji:"🥑", name:"Avocado",   say:"Avocado",
+  {key:"avocado", big:"../img/items/a/Avocado.png",   emoji:"🥑", name:"Avocado",   say:"Avocado",
    desc:"A soft green fruit that is yummy and creamy."},
-  {key:"ambulance", emoji:"🚑", name:"Ambulance", say:"Ambulance",
+  {key:"ambulance", big:"../img/items/a/Ambulance.png", emoji:"🚑", name:"Ambulance", say:"Ambulance",
    desc:"A special van that rushes to help people."},
-  {key:"art",       emoji:"🎨", name:"Art",       say:"Art",
+  {key:"art", big:"../img/items/a/Art.png",       emoji:"🎨", name:"Art",       say:"Art",
    desc:"Beautiful pictures and paintings made with love."},
 ];;
 
@@ -343,11 +343,11 @@ function setStageShown(shown){
   stage.style.transform = `${t} scale(${shown?1:0})`;
 }
 function showBig(w){
-  const url = "https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg";
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
   stage.innerHTML =
     `<div class="emojiFallback">${w.emoji}</div>
-     <img src="${url}" alt="" onerror="this.remove()">`;
+     <img src="${url}" alt="" onerror="if(this.previousElementSibling)this.previousElementSibling.style.display='none'">`;
   stageName.textContent = w.name;
   setStageShown(true); stageName.classList.add("show");
 }

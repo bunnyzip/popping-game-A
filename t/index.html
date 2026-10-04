@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"tree", emoji:"🌳", name:"tree", say:"tree",
+  {key:"tree", big:"../img/items/t/Tree.png", emoji:"🌳", name:"tree", say:"tree",
    desc:"A tall plant with branches and leaves."},
-  {key:"tiger", emoji:"🐯", name:"tiger", say:"tiger",
+  {key:"tiger", big:"../img/items/t/Tiger.png", emoji:"🐯", name:"tiger", say:"tiger",
    desc:"A big striped cat that roars."},
-  {key:"train", emoji:"🚂", name:"train", say:"train",
+  {key:"train", big:"../img/items/t/Train.png", emoji:"🚂", name:"train", say:"train",
    desc:"It chugs along the rails."},
-  {key:"truck", emoji:"🚚", name:"truck", say:"truck",
+  {key:"truck", big:"../img/items/t/Truck.png", emoji:"🚚", name:"truck", say:"truck",
    desc:"A big car that carries heavy things."},
-  {key:"turtle", emoji:"🐢", name:"turtle", say:"turtle",
+  {key:"turtle", big:"../img/items/t/Turtle.png", emoji:"🐢", name:"turtle", say:"turtle",
    desc:"It carries its house on its back."},
-  {key:"table", emoji:"🪑", name:"table", say:"table",
+  {key:"table", big:"../img/items/t/Table.png", emoji:"🪑", name:"table", say:"table",
    desc:"Where we sit and eat our meals."},
-  {key:"tooth", emoji:"🦷", name:"tooth", say:"tooth",
+  {key:"tooth", big:"../img/items/t/Tooth.png", emoji:"🦷", name:"tooth", say:"tooth",
    desc:"The little white bones in your smile."},
-  {key:"tomato", emoji:"🍅", name:"tomato", say:"tomato",
+  {key:"tomato", big:"../img/items/t/Tomato.png", emoji:"🍅", name:"tomato", say:"tomato",
    desc:"A red juicy fruit for salads and sauce."},
-  {key:"tornado", emoji:"🌪️", name:"tornado", say:"tornado",
+  {key:"tornado", big:"../img/items/t/Tornado.png", emoji:"🌪️", name:"tornado", say:"tornado",
    desc:"A spinning wind storm."},
-  {key:"telephone", emoji:"☎️", name:"telephone", say:"telephone",
+  {key:"telephone", big:"../img/items/t/Telephone.png", emoji:"☎️", name:"telephone", say:"telephone",
    desc:"You call someone and talk through it."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

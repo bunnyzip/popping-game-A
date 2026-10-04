@@ -126,17 +126,17 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"zebra", emoji:"🦓", name:"zebra", say:"zebra",
+  {key:"zebra", big:"../img/items/z/Zebra.png", emoji:"🦓", name:"zebra", say:"zebra",
    desc:"A horse of black and white stripes."},
-  {key:"zero", emoji:"0️⃣", name:"zero", say:"zero",
+  {key:"zero", big:"../img/items/z/Zero.png", emoji:"0️⃣", name:"zero", say:"zero",
    desc:"The number for nothing at all."},
-  {key:"zucchini", emoji:"🥒", name:"zucchini", say:"zucchini",
+  {key:"zucchini", big:"../img/items/z/Zucchini.png", emoji:"🥒", name:"zucchini", say:"zucchini",
    desc:"A long green vegetable."},
-  {key:"zombie", emoji:"🧟", name:"zombie", say:"zombie",
+  {key:"zombie", big:"../img/items/z/Zombie.png", emoji:"🧟", name:"zombie", say:"zombie",
    desc:"A spooky make believe walking creature."},
-  {key:"zipper", emoji:"🤐", name:"zipper", say:"zipper",
+  {key:"zipper", big:"../img/items/z/Zipper.png", emoji:"🤐", name:"zipper", say:"zipper",
    desc:"The teeth that close your jacket."},
-  {key:"zigzag", emoji:"➰", name:"zigzag", say:"zigzag",
+  {key:"zigzag", big:"../img/items/z/Zigzag.png", emoji:"➰", name:"zigzag", say:"zigzag",
    desc:"A line that goes side to side."}
 ];
 
@@ -328,9 +328,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

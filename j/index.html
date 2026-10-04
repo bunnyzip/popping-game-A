@@ -126,23 +126,23 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"juice", emoji:"🧃", name:"juice", say:"juice",
+  {key:"juice", big:"../img/items/j/Juice.png", emoji:"🧃", name:"juice", say:"juice",
    desc:"A sweet drink squeezed from fruit."},
-  {key:"jacket", emoji:"🧥", name:"jacket", say:"jacket",
+  {key:"jacket", big:"../img/items/j/Jacket.png", emoji:"🧥", name:"jacket", say:"jacket",
    desc:"A coat that keeps you cozy."},
-  {key:"jet", emoji:"✈️", name:"jet", say:"jet",
+  {key:"jet", big:"../img/items/j/Jet.png", emoji:"✈️", name:"jet", say:"jet",
    desc:"A super fast airplane."},
-  {key:"jeep", emoji:"🚙", name:"jeep", say:"jeep",
+  {key:"jeep", big:"../img/items/j/Jeep.png", emoji:"🚙", name:"jeep", say:"jeep",
    desc:"A strong car for bumpy roads."},
-  {key:"jelly", emoji:"🍮", name:"jelly", say:"jelly",
+  {key:"jelly", big:"../img/items/j/Jelly.png", emoji:"🍮", name:"jelly", say:"jelly",
    desc:"A wobbly jiggly sweet dessert."},
-  {key:"jeans", emoji:"👖", name:"jeans", say:"jeans",
+  {key:"jeans", big:"../img/items/j/Jeans.png", emoji:"👖", name:"jeans", say:"jeans",
    desc:"Tough blue pants you wear."},
-  {key:"joker", emoji:"🃏", name:"joker", say:"joker",
+  {key:"joker", big:"../img/items/j/Joker.png", emoji:"🃏", name:"joker", say:"joker",
    desc:"A silly playing card that loves fun."},
-  {key:"joystick", emoji:"🕹️", name:"joystick", say:"joystick",
+  {key:"joystick", big:"../img/items/j/Joystick.png", emoji:"🕹️", name:"joystick", say:"joystick",
    desc:"A stick you tilt to play games."},
-  {key:"jam", emoji:"🍯", name:"jam", say:"jam",
+  {key:"jam", big:"../img/items/j/Jam.png", emoji:"🍯", name:"jam", say:"jam",
    desc:"Sweet crushed fruit for your toast."}
 ];
 
@@ -334,9 +334,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"cake", emoji:"🎂", name:"cake", say:"cake",
+  {key:"cake", big:"../img/items/c/Cake.png", emoji:"🎂", name:"cake", say:"cake",
    desc:"A soft sweet treat we eat on birthdays."},
-  {key:"cat", emoji:"🐱", name:"cat", say:"cat",
+  {key:"cat", big:"../img/items/c/Cat.png", emoji:"🐱", name:"cat", say:"cat",
    desc:"A soft furry pet that says meow."},
-  {key:"car", emoji:"🚗", name:"car", say:"car",
+  {key:"car", big:"../img/items/c/Car.png", emoji:"🚗", name:"car", say:"car",
    desc:"A machine with wheels that drives on roads."},
-  {key:"cow", emoji:"🐄", name:"cow", say:"cow",
+  {key:"cow", big:"../img/items/c/Cow.png", emoji:"🐄", name:"cow", say:"cow",
    desc:"A big farm animal that gives us milk."},
-  {key:"cup", emoji:"☕", name:"cup", say:"cup",
+  {key:"cup", big:"../img/items/c/Cup.png", emoji:"☕", name:"cup", say:"cup",
    desc:"A small container we drink from."},
-  {key:"carrot", emoji:"🥕", name:"carrot", say:"carrot",
+  {key:"carrot", big:"../img/items/c/Carrot.png", emoji:"🥕", name:"carrot", say:"carrot",
    desc:"A long orange vegetable that rabbits love."},
-  {key:"candle", emoji:"🕯️", name:"candle", say:"candle",
+  {key:"candle", big:"../img/items/c/Candle.png", emoji:"🕯️", name:"candle", say:"candle",
    desc:"A stick of wax with a flame that glows."},
-  {key:"cloud", emoji:"☁️", name:"cloud", say:"cloud",
+  {key:"cloud", big:"../img/items/c/Cloud.png", emoji:"☁️", name:"cloud", say:"cloud",
    desc:"A soft white floater in the sky."},
-  {key:"cherry", emoji:"🍒", name:"cherry", say:"cherry",
+  {key:"cherry", big:"../img/items/c/Cherry.png", emoji:"🍒", name:"cherry", say:"cherry",
    desc:"A tiny round red fruit with a stem."},
-  {key:"clock", emoji:"⏰", name:"clock", say:"clock",
+  {key:"clock", big:"../img/items/c/Clock.png", emoji:"⏰", name:"clock", say:"clock",
    desc:"It has hands that show us the time."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

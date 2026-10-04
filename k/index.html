@@ -126,23 +126,23 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"kite", emoji:"🪁", name:"kite", say:"kite",
+  {key:"kite", big:"../img/items/k/Kite.png", emoji:"🪁", name:"kite", say:"kite",
    desc:"It dances in the wind on a string."},
-  {key:"key", emoji:"🔑", name:"key", say:"key",
+  {key:"key", big:"../img/items/k/Key.png", emoji:"🔑", name:"key", say:"key",
    desc:"A little metal tool that opens locks."},
-  {key:"king", emoji:"👑", name:"king", say:"king",
+  {key:"king", big:"../img/items/k/King.png", emoji:"👑", name:"king", say:"king",
    desc:"A ruler with a golden crown."},
-  {key:"kangaroo", emoji:"🦘", name:"kangaroo", say:"kangaroo",
+  {key:"kangaroo", big:"../img/items/k/Kangaroo.png", emoji:"🦘", name:"kangaroo", say:"kangaroo",
    desc:"It hops with a baby in its pouch."},
-  {key:"kiwi", emoji:"🥝", name:"kiwi", say:"kiwi",
+  {key:"kiwi", big:"../img/items/k/Kiwi.png", emoji:"🥝", name:"kiwi", say:"kiwi",
    desc:"A fuzzy brown fruit, green inside."},
-  {key:"kitten", emoji:"🐱", name:"kitten", say:"kitten",
+  {key:"kitten", big:"../img/items/k/Kitten.png", emoji:"🐱", name:"kitten", say:"kitten",
    desc:"A baby cat, small and sweet."},
-  {key:"kitchen", emoji:"🍳", name:"kitchen", say:"kitchen",
+  {key:"kitchen", big:"../img/items/k/Kitchen.png", emoji:"🍳", name:"kitchen", say:"kitchen",
    desc:"The room where food is cooked."},
-  {key:"keyboard", emoji:"⌨️", name:"keyboard", say:"keyboard",
+  {key:"keyboard", big:"../img/items/k/Keyboard.png", emoji:"⌨️", name:"keyboard", say:"keyboard",
    desc:"The board of keys you type on."},
-  {key:"koala", emoji:"🐨", name:"koala", say:"koala",
+  {key:"koala", big:"../img/items/k/Koala.png", emoji:"🐨", name:"koala", say:"koala",
    desc:"A fuzzy gray animal that sleeps in trees."}
 ];
 
@@ -334,9 +334,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

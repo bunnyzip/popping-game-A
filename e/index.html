@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"egg", emoji:"🥚", name:"egg", say:"egg",
+  {key:"egg", big:"../img/items/e/Egg.png", emoji:"🥚", name:"egg", say:"egg",
    desc:"An oval food that comes from a hen."},
-  {key:"elephant", emoji:"🐘", name:"elephant", say:"elephant",
+  {key:"elephant", big:"../img/items/e/Elephant.png", emoji:"🐘", name:"elephant", say:"elephant",
    desc:"The biggest animal with a long trunk."},
-  {key:"earth", emoji:"🌍", name:"earth", say:"earth",
+  {key:"earth", big:"../img/items/e/Earth.png", emoji:"🌍", name:"earth", say:"earth",
    desc:"The planet we all live on."},
-  {key:"eye", emoji:"👁️", name:"eye", say:"eye",
+  {key:"eye", big:"../img/items/e/Eye.png", emoji:"👁️", name:"eye", say:"eye",
    desc:"You see the whole world with it."},
-  {key:"ear", emoji:"👂", name:"ear", say:"ear",
+  {key:"ear", big:"../img/items/e/Ear.png", emoji:"👂", name:"ear", say:"ear",
    desc:"You hear sounds with it."},
-  {key:"eggplant", emoji:"🍆", name:"eggplant", say:"eggplant",
+  {key:"eggplant", big:"../img/items/e/Eggplant.png", emoji:"🍆", name:"eggplant", say:"eggplant",
    desc:"A big purple vegetable."},
-  {key:"envelope", emoji:"✉️", name:"envelope", say:"envelope",
+  {key:"envelope", big:"../img/items/e/Envelope.png", emoji:"✉️", name:"envelope", say:"envelope",
    desc:"A paper cover that holds a letter."},
-  {key:"eagle", emoji:"🦅", name:"eagle", say:"eagle",
+  {key:"eagle", big:"../img/items/e/Eagle.png", emoji:"🦅", name:"eagle", say:"eagle",
    desc:"A mighty bird that soars high."},
-  {key:"engine", emoji:"🚂", name:"engine", say:"engine",
+  {key:"engine", big:"../img/items/e/Engine.png", emoji:"🚂", name:"engine", say:"engine",
    desc:"The front car that pulls a train."},
-  {key:"eight", emoji:"8️⃣", name:"eight", say:"eight",
+  {key:"eight", big:"../img/items/e/Eight.png", emoji:"8️⃣", name:"eight", say:"eight",
    desc:"The number after seven."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

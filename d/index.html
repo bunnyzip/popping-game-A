@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"dog", emoji:"🐶", name:"dog", say:"dog",
+  {key:"dog", big:"../img/items/d/Dog.png", emoji:"🐶", name:"dog", say:"dog",
    desc:"A loyal pet that barks and wags its tail."},
-  {key:"duck", emoji:"🦆", name:"duck", say:"duck",
+  {key:"duck", big:"../img/items/d/Duck.png", emoji:"🦆", name:"duck", say:"duck",
    desc:"A bird that swims and says quack."},
-  {key:"dolphin", emoji:"🐬", name:"dolphin", say:"dolphin",
+  {key:"dolphin", big:"../img/items/d/Dolphin.png", emoji:"🐬", name:"dolphin", say:"dolphin",
    desc:"A smart sea animal that loves to jump."},
-  {key:"donut", emoji:"🍩", name:"donut", say:"donut",
+  {key:"donut", big:"../img/items/d/Donut.png", emoji:"🍩", name:"donut", say:"donut",
    desc:"A sweet ring shaped treat with icing."},
-  {key:"door", emoji:"🚪", name:"door", say:"door",
+  {key:"door", big:"../img/items/d/Door.png", emoji:"🚪", name:"door", say:"door",
    desc:"You open it to walk into a room."},
-  {key:"drum", emoji:"🥁", name:"drum", say:"drum",
+  {key:"drum", big:"../img/items/d/Drum.png", emoji:"🥁", name:"drum", say:"drum",
    desc:"You hit it to make boom boom sounds."},
-  {key:"dinosaur", emoji:"🦕", name:"dinosaur", say:"dinosaur",
+  {key:"dinosaur", big:"../img/items/d/Dinosaur.png", emoji:"🦕", name:"dinosaur", say:"dinosaur",
    desc:"A giant animal that lived long long ago."},
-  {key:"dress", emoji:"👗", name:"dress", say:"dress",
+  {key:"dress", big:"../img/items/d/Dress.png", emoji:"👗", name:"dress", say:"dress",
    desc:"A pretty piece of clothing that flows down."},
-  {key:"diamond", emoji:"💎", name:"diamond", say:"diamond",
+  {key:"diamond", big:"../img/items/d/Diamond.png", emoji:"💎", name:"diamond", say:"diamond",
    desc:"A shiny sparkling precious stone."},
-  {key:"doll", emoji:"🪆", name:"doll", say:"doll",
+  {key:"doll", big:"../img/items/d/Doll.png", emoji:"🪆", name:"doll", say:"doll",
    desc:"A small toy that looks like a person."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

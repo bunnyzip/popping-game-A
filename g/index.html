@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"grapes", emoji:"🍇", name:"grapes", say:"grapes",
+  {key:"grapes", big:"../img/items/g/Grapes.png", emoji:"🍇", name:"grapes", say:"grapes",
    desc:"Little sweet fruits that grow in bunches."},
-  {key:"gift", emoji:"🎁", name:"gift", say:"gift",
+  {key:"gift", big:"../img/items/g/Gift.png", emoji:"🎁", name:"gift", say:"gift",
    desc:"A surprise wrapped up with a bow."},
-  {key:"giraffe", emoji:"🦒", name:"giraffe", say:"giraffe",
+  {key:"giraffe", big:"../img/items/g/Giraffe.png", emoji:"🦒", name:"giraffe", say:"giraffe",
    desc:"The tallest animal with a long long neck."},
-  {key:"goat", emoji:"🐐", name:"goat", say:"goat",
+  {key:"goat", big:"../img/items/g/Goat.png", emoji:"🐐", name:"goat", say:"goat",
    desc:"A farm animal that climbs and nibbles."},
-  {key:"guitar", emoji:"🎸", name:"guitar", say:"guitar",
+  {key:"guitar", big:"../img/items/g/Guitar.png", emoji:"🎸", name:"guitar", say:"guitar",
    desc:"A stringed instrument you strum."},
-  {key:"glass", emoji:"🥛", name:"glass", say:"glass",
+  {key:"glass", big:"../img/items/g/Glass.png", emoji:"🥛", name:"glass", say:"glass",
    desc:"We drink milk from it."},
-  {key:"ghost", emoji:"👻", name:"ghost", say:"ghost",
+  {key:"ghost", big:"../img/items/g/Ghost.png", emoji:"👻", name:"ghost", say:"ghost",
    desc:"A friendly spooky floaty thing."},
-  {key:"glove", emoji:"🧤", name:"glove", say:"glove",
+  {key:"glove", big:"../img/items/g/Glove.png", emoji:"🧤", name:"glove", say:"glove",
    desc:"It keeps your hand warm."},
-  {key:"garlic", emoji:"🧄", name:"garlic", say:"garlic",
+  {key:"garlic", big:"../img/items/g/Garlic.png", emoji:"🧄", name:"garlic", say:"garlic",
    desc:"A strong flavored bulb for cooking."},
-  {key:"grass", emoji:"🌿", name:"grass", say:"grass",
+  {key:"grass", big:"../img/items/g/Grass.png", emoji:"🌿", name:"grass", say:"grass",
    desc:"Green blades that cover the ground."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

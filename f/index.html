@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"fish", emoji:"🐟", name:"fish", say:"fish",
+  {key:"fish", big:"../img/items/f/Fish.png", emoji:"🐟", name:"fish", say:"fish",
    desc:"It swims in water and blows bubbles."},
-  {key:"frog", emoji:"🐸", name:"frog", say:"frog",
+  {key:"frog", big:"../img/items/f/Frog.png", emoji:"🐸", name:"frog", say:"frog",
    desc:"It hops and says ribbit."},
-  {key:"flower", emoji:"🌸", name:"flower", say:"flower",
+  {key:"flower", big:"../img/items/f/Flower.png", emoji:"🌸", name:"flower", say:"flower",
    desc:"A pretty plant that smells nice."},
-  {key:"fire", emoji:"🔥", name:"fire", say:"fire",
+  {key:"fire", big:"../img/items/f/Fire.png", emoji:"🔥", name:"fire", say:"fire",
    desc:"Bright hot flames that dance."},
-  {key:"fox", emoji:"🦊", name:"fox", say:"fox",
+  {key:"fox", big:"../img/items/f/Fox.png", emoji:"🦊", name:"fox", say:"fox",
    desc:"A clever animal with a bushy tail."},
-  {key:"fries", emoji:"🍟", name:"fries", say:"fries",
+  {key:"fries", big:"../img/items/f/Fries.png", emoji:"🍟", name:"fries", say:"fries",
    desc:"Yummy golden potato sticks."},
-  {key:"fork", emoji:"🍴", name:"fork", say:"fork",
+  {key:"fork", big:"../img/items/f/Fork.png", emoji:"🍴", name:"fork", say:"fork",
    desc:"We use it to pick up our food."},
-  {key:"flag", emoji:"🚩", name:"flag", say:"flag",
+  {key:"flag", big:"../img/items/f/Flag.png", emoji:"🚩", name:"flag", say:"flag",
    desc:"A cloth with colors that waves on a pole."},
-  {key:"football", emoji:"⚽", name:"football", say:"football",
+  {key:"football", big:"../img/items/f/Football.png", emoji:"⚽", name:"football", say:"football",
    desc:"A ball you kick into a goal."},
-  {key:"farm", emoji:"🚜", name:"farm", say:"farm",
+  {key:"farm", big:"../img/items/f/Farm.png", emoji:"🚜", name:"farm", say:"farm",
    desc:"A place where crops grow and animals live."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

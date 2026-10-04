@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"monkey", emoji:"🐵", name:"monkey", say:"monkey",
+  {key:"monkey", big:"../img/items/m/Monkey.png", emoji:"🐵", name:"monkey", say:"monkey",
    desc:"A playful animal that swings on trees."},
-  {key:"moon", emoji:"🌙", name:"moon", say:"moon",
+  {key:"moon", big:"../img/items/m/Moon.png", emoji:"🌙", name:"moon", say:"moon",
    desc:"It glows in the night sky."},
-  {key:"milk", emoji:"🥛", name:"milk", say:"milk",
+  {key:"milk", big:"../img/items/m/Milk.png", emoji:"🥛", name:"milk", say:"milk",
    desc:"A white drink that comes from cows."},
-  {key:"mango", emoji:"🥭", name:"mango", say:"mango",
+  {key:"mango", big:"../img/items/m/Mango.png", emoji:"🥭", name:"mango", say:"mango",
    desc:"A juicy golden sweet fruit."},
-  {key:"mouse", emoji:"🐭", name:"mouse", say:"mouse",
+  {key:"mouse", big:"../img/items/m/Mouse.png", emoji:"🐭", name:"mouse", say:"mouse",
    desc:"A tiny squeaky animal with a long tail."},
-  {key:"mountain", emoji:"⛰️", name:"mountain", say:"mountain",
+  {key:"mountain", big:"../img/items/m/Mountain.png", emoji:"⛰️", name:"mountain", say:"mountain",
    desc:"A giant tall piece of earth you can climb."},
-  {key:"mushroom", emoji:"🍄", name:"mushroom", say:"mushroom",
+  {key:"mushroom", big:"../img/items/m/Mushroom.png", emoji:"🍄", name:"mushroom", say:"mushroom",
    desc:"An umbrella shaped friend of the rain."},
-  {key:"motorbike", emoji:"🏍️", name:"motorbike", say:"motorbike",
+  {key:"motorbike", big:"../img/items/m/Motorbike.png", emoji:"🏍️", name:"motorbike", say:"motorbike",
    desc:"A two wheeler that goes vroom."},
-  {key:"map", emoji:"🗺️", name:"map", say:"map",
+  {key:"map", big:"../img/items/m/Map.png", emoji:"🗺️", name:"map", say:"map",
    desc:"It shows you the way to places."},
-  {key:"mitten", emoji:"🧤", name:"mitten", say:"mitten",
+  {key:"mitten", big:"../img/items/m/Mitten.png", emoji:"🧤", name:"mitten", say:"mitten",
    desc:"A cozy glove without fingers."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

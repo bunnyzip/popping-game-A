@@ -126,11 +126,11 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"xylophone", emoji:"🎼", name:"xylophone", say:"xylophone",
+  {key:"xylophone", big:"../img/items/x/Xylophone.png", emoji:"🎼", name:"xylophone", say:"xylophone",
    desc:"A rainbow of bars you tap with sticks, plink plink."},
-  {key:"x_ray", emoji:"🩻", name:"x ray", say:"x ray",
+  {key:"x_ray", big:"../img/items/x/X_ray.png", emoji:"🩻", name:"x ray", say:"x ray",
    desc:"A photo of the inside of your body."},
-  {key:"xmas_tree", emoji:"🎄", name:"xmas tree", say:"xmas tree",
+  {key:"xmas_tree", big:"../img/items/x/Xmas_tree.png", emoji:"🎄", name:"xmas tree", say:"xmas tree",
    desc:"A sparkly tree we decorate in december."}
 ];
 
@@ -322,9 +322,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

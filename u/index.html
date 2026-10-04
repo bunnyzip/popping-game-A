@@ -126,23 +126,23 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"umbrella", emoji:"☂️", name:"umbrella", say:"umbrella",
+  {key:"umbrella", big:"../img/items/u/Umbrella.png", emoji:"☂️", name:"umbrella", say:"umbrella",
    desc:"It keeps the rain off your head."},
-  {key:"unicorn", emoji:"🦄", name:"unicorn", say:"unicorn",
+  {key:"unicorn", big:"../img/items/u/Unicorn.png", emoji:"🦄", name:"unicorn", say:"unicorn",
    desc:"A magical horse with one spiral horn."},
-  {key:"up", emoji:"⬆️", name:"up", say:"up",
+  {key:"up", big:"../img/items/u/Up.png", emoji:"⬆️", name:"up", say:"up",
    desc:"The way to the sky."},
-  {key:"underwear", emoji:"🩲", name:"underwear", say:"underwear",
+  {key:"underwear", big:"../img/items/u/Underwear.png", emoji:"🩲", name:"underwear", say:"underwear",
    desc:"The clothes you wear under everything."},
-  {key:"urn", emoji:"⚱️", name:"urn", say:"urn",
+  {key:"urn", big:"../img/items/u/Urn.png", emoji:"⚱️", name:"urn", say:"urn",
    desc:"A fancy vase with a lid."},
-  {key:"utensils", emoji:"🍴", name:"utensils", say:"utensils",
+  {key:"utensils", big:"../img/items/u/Utensils.png", emoji:"🍴", name:"utensils", say:"utensils",
    desc:"The tools we eat with."},
-  {key:"ukulele", emoji:"🪕", name:"ukulele", say:"ukulele",
+  {key:"ukulele", big:"../img/items/u/Ukulele.png", emoji:"🪕", name:"ukulele", say:"ukulele",
    desc:"A tiny happy little guitar."},
-  {key:"universe", emoji:"🌌", name:"universe", say:"universe",
+  {key:"universe", big:"../img/items/u/Universe.png", emoji:"🌌", name:"universe", say:"universe",
    desc:"All of space and stars and everything."},
-  {key:"unlock", emoji:"🔓", name:"unlock", say:"unlock",
+  {key:"unlock", big:"../img/items/u/Unlock.png", emoji:"🔓", name:"unlock", say:"unlock",
    desc:"To open what was locked."}
 ];
 
@@ -334,9 +334,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

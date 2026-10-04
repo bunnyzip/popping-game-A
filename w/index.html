@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"water", emoji:"💧", name:"water", say:"water",
+  {key:"water", big:"../img/items/w/Water.png", emoji:"💧", name:"water", say:"water",
    desc:"The clear drink that all life needs."},
-  {key:"whale", emoji:"🐳", name:"whale", say:"whale",
+  {key:"whale", big:"../img/items/w/Whale.png", emoji:"🐳", name:"whale", say:"whale",
    desc:"The biggest animal in the whole ocean."},
-  {key:"wolf", emoji:"🐺", name:"wolf", say:"wolf",
+  {key:"wolf", big:"../img/items/w/Wolf.png", emoji:"🐺", name:"wolf", say:"wolf",
    desc:"A wild animal that howls at the moon."},
-  {key:"watch", emoji:"⌚", name:"watch", say:"watch",
+  {key:"watch", big:"../img/items/w/Watch.png", emoji:"⌚", name:"watch", say:"watch",
    desc:"A tiny clock on your wrist."},
-  {key:"watermelon", emoji:"🍉", name:"watermelon", say:"watermelon",
+  {key:"watermelon", big:"../img/items/w/Watermelon.png", emoji:"🍉", name:"watermelon", say:"watermelon",
    desc:"A giant green fruit, pink and juicy inside."},
-  {key:"wind", emoji:"🌬️", name:"wind", say:"wind",
+  {key:"wind", big:"../img/items/w/Wind.png", emoji:"🌬️", name:"wind", say:"wind",
    desc:"You cannot see it but you feel it move."},
-  {key:"wheel", emoji:"⚙️", name:"wheel", say:"wheel",
+  {key:"wheel", big:"../img/items/w/Wheel.png", emoji:"⚙️", name:"wheel", say:"wheel",
    desc:"A round part that turns and rolls."},
-  {key:"wand", emoji:"🪄", name:"wand", say:"wand",
+  {key:"wand", big:"../img/items/w/Wand.png", emoji:"🪄", name:"wand", say:"wand",
    desc:"A magic stick that grants wishes."},
-  {key:"web", emoji:"🕸️", name:"web", say:"web",
+  {key:"web", big:"../img/items/w/Web.png", emoji:"🕸️", name:"web", say:"web",
    desc:"A sticky net a spider weaves."},
-  {key:"wood", emoji:"🪵", name:"wood", say:"wood",
+  {key:"wood", big:"../img/items/w/Wood.png", emoji:"🪵", name:"wood", say:"wood",
    desc:"The hard stuff trees are made of."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

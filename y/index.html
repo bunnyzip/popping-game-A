@@ -126,19 +126,19 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"yo_yo", emoji:"🪀", name:"yo yo", say:"yo yo",
+  {key:"yo_yo", big:"../img/items/y/Yo_yo.png", emoji:"🪀", name:"yo yo", say:"yo yo",
    desc:"A spinning toy that rolls down and back up your string."},
-  {key:"yogurt", emoji:"🥛", name:"yogurt", say:"yogurt",
+  {key:"yogurt", big:"../img/items/y/Yogurt.png", emoji:"🥛", name:"yogurt", say:"yogurt",
    desc:"A creamy tangy spoonful treat."},
-  {key:"yacht", emoji:"⛵", name:"yacht", say:"yacht",
+  {key:"yacht", big:"../img/items/y/Yacht.png", emoji:"⛵", name:"yacht", say:"yacht",
    desc:"A fancy boat with sails."},
-  {key:"yak", emoji:"🐃", name:"yak", say:"yak",
+  {key:"yak", big:"../img/items/y/Yak.png", emoji:"🐃", name:"yak", say:"yak",
    desc:"A shaggy big ox from the mountains."},
-  {key:"yolk", emoji:"🍳", name:"yolk", say:"yolk",
+  {key:"yolk", big:"../img/items/y/Yolk.png", emoji:"🍳", name:"yolk", say:"yolk",
    desc:"The golden yellow center of an egg."},
-  {key:"yellow", emoji:"💛", name:"yellow", say:"yellow",
+  {key:"yellow", big:"../img/items/y/Yellow.png", emoji:"💛", name:"yellow", say:"yellow",
    desc:"The color of the sun and lemons."},
-  {key:"yarn", emoji:"🧶", name:"yarn", say:"yarn",
+  {key:"yarn", big:"../img/items/y/Yarn.png", emoji:"🧶", name:"yarn", say:"yarn",
    desc:"Soft string for knitting."}
 ];
 
@@ -330,9 +330,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

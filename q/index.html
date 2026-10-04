@@ -126,15 +126,15 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"queen", emoji:"👸", name:"queen", say:"queen",
+  {key:"queen", big:"../img/items/q/Queen.png", emoji:"👸", name:"queen", say:"queen",
    desc:"A royal lady with a crown."},
-  {key:"question", emoji:"❓", name:"question", say:"question",
+  {key:"question", big:"../img/items/q/Question.png", emoji:"❓", name:"question", say:"question",
    desc:"Something you ask."},
-  {key:"quilt", emoji:"🛏️", name:"quilt", say:"quilt",
+  {key:"quilt", big:"../img/items/q/Quilt.png", emoji:"🛏️", name:"quilt", say:"quilt",
    desc:"A cozy padded blanket."},
-  {key:"quiet", emoji:"🤫", name:"quiet", say:"quiet",
+  {key:"quiet", big:"../img/items/q/Quiet.png", emoji:"🤫", name:"quiet", say:"quiet",
    desc:"When everything is hush hush silent."},
-  {key:"quiz", emoji:"📝", name:"quiz", say:"quiz",
+  {key:"quiz", big:"../img/items/q/Quiz.png", emoji:"📝", name:"quiz", say:"quiz",
    desc:"A fun game of questions."}
 ];
 
@@ -326,9 +326,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

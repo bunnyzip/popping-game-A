@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"ball", emoji:"🏀", name:"ball", say:"ball",
+  {key:"ball", big:"../img/items/b/Ball.png", emoji:"🏀", name:"ball", say:"ball",
    desc:"A round toy you can bounce and throw."},
-  {key:"banana", emoji:"🍌", name:"banana", say:"banana",
+  {key:"banana", big:"../img/items/b/Banana.png", emoji:"🍌", name:"banana", say:"banana",
    desc:"A long yellow fruit that monkeys love."},
-  {key:"bat", emoji:"🦇", name:"bat", say:"bat",
+  {key:"bat", big:"../img/items/b/Bat.png", emoji:"🦇", name:"bat", say:"bat",
    desc:"An animal that flies at night and sleeps upside down."},
-  {key:"bear", emoji:"🐻", name:"bear", say:"bear",
+  {key:"bear", big:"../img/items/b/Bear.png", emoji:"🐻", name:"bear", say:"bear",
    desc:"A big furry animal that loves honey."},
-  {key:"bee", emoji:"🐝", name:"bee", say:"bee",
+  {key:"bee", big:"../img/items/b/Bee.png", emoji:"🐝", name:"bee", say:"bee",
    desc:"A buzzing insect that makes sweet honey."},
-  {key:"boat", emoji:"⛵", name:"boat", say:"boat",
+  {key:"boat", big:"../img/items/b/Boat.png", emoji:"⛵", name:"boat", say:"boat",
    desc:"It floats on water and takes you places."},
-  {key:"book", emoji:"📖", name:"book", say:"book",
+  {key:"book", big:"../img/items/b/Book.png", emoji:"📖", name:"book", say:"book",
    desc:"Full of pages and stories to read."},
-  {key:"butterfly", emoji:"🦋", name:"butterfly", say:"butterfly",
+  {key:"butterfly", big:"../img/items/b/Butterfly.png", emoji:"🦋", name:"butterfly", say:"butterfly",
    desc:"A pretty insect with colorful wings."},
-  {key:"bus", emoji:"🚌", name:"bus", say:"bus",
+  {key:"bus", big:"../img/items/b/Bus.png", emoji:"🚌", name:"bus", say:"bus",
    desc:"A big car that carries many people."},
-  {key:"balloon", emoji:"🎈", name:"balloon", say:"balloon",
+  {key:"balloon", big:"../img/items/b/Balloon.png", emoji:"🎈", name:"balloon", say:"balloon",
    desc:"A stretchy ball of air that floats up high."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

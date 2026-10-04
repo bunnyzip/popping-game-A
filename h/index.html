@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"hat", emoji:"👒", name:"hat", say:"hat",
+  {key:"hat", big:"../img/items/h/Hat.png", emoji:"👒", name:"hat", say:"hat",
    desc:"You wear it on your head."},
-  {key:"heart", emoji:"❤️", name:"heart", say:"heart",
+  {key:"heart", big:"../img/items/h/Heart.png", emoji:"❤️", name:"heart", say:"heart",
    desc:"It goes lub dub inside your chest and means love."},
-  {key:"horse", emoji:"🐴", name:"horse", say:"horse",
+  {key:"horse", big:"../img/items/h/Horse.png", emoji:"🐴", name:"horse", say:"horse",
    desc:"A big animal you can ride, it says neigh."},
-  {key:"house", emoji:"🏠", name:"house", say:"house",
+  {key:"house", big:"../img/items/h/House.png", emoji:"🏠", name:"house", say:"house",
    desc:"A building where a family lives."},
-  {key:"honey", emoji:"🍯", name:"honey", say:"honey",
+  {key:"honey", big:"../img/items/h/Honey.png", emoji:"🍯", name:"honey", say:"honey",
    desc:"Sweet golden syrup made by bees."},
-  {key:"hammer", emoji:"🔨", name:"hammer", say:"hammer",
+  {key:"hammer", big:"../img/items/h/Hammer.png", emoji:"🔨", name:"hammer", say:"hammer",
    desc:"A tool that goes bang on nails."},
-  {key:"hand", emoji:"✋", name:"hand", say:"hand",
+  {key:"hand", big:"../img/items/h/Hand.png", emoji:"✋", name:"hand", say:"hand",
    desc:"You wave hello with it."},
-  {key:"hippo", emoji:"🦛", name:"hippo", say:"hippo",
+  {key:"hippo", big:"../img/items/h/Hippo.png", emoji:"🦛", name:"hippo", say:"hippo",
    desc:"A big animal that loves the water."},
-  {key:"helicopter", emoji:"🚁", name:"helicopter", say:"helicopter",
+  {key:"helicopter", big:"../img/items/h/Helicopter.png", emoji:"🚁", name:"helicopter", say:"helicopter",
    desc:"It flies with spinning blades on top."},
-  {key:"hamburger", emoji:"🍔", name:"hamburger", say:"hamburger",
+  {key:"hamburger", big:"../img/items/h/Hamburger.png", emoji:"🍔", name:"hamburger", say:"hamburger",
    desc:"A yummy stack of bun and patty."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

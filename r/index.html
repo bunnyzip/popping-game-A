@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"rabbit", emoji:"🐰", name:"rabbit", say:"rabbit",
+  {key:"rabbit", big:"../img/items/r/Rabbit.png", emoji:"🐰", name:"rabbit", say:"rabbit",
    desc:"A fluffy hopper with long ears."},
-  {key:"rainbow", emoji:"🌈", name:"rainbow", say:"rainbow",
+  {key:"rainbow", big:"../img/items/r/Rainbow.png", emoji:"🌈", name:"rainbow", say:"rainbow",
    desc:"Seven colors arching across the sky."},
-  {key:"ring", emoji:"💍", name:"ring", say:"ring",
+  {key:"ring", big:"../img/items/r/Ring.png", emoji:"💍", name:"ring", say:"ring",
    desc:"A shiny circle you wear on your finger."},
-  {key:"rose", emoji:"🌹", name:"rose", say:"rose",
+  {key:"rose", big:"../img/items/r/Rose.png", emoji:"🌹", name:"rose", say:"rose",
    desc:"A beautiful flower with thorns."},
-  {key:"rocket", emoji:"🚀", name:"rocket", say:"rocket",
+  {key:"rocket", big:"../img/items/r/Rocket.png", emoji:"🚀", name:"rocket", say:"rocket",
    desc:"It blasts off into space."},
-  {key:"rain", emoji:"🌧️", name:"rain", say:"rain",
+  {key:"rain", big:"../img/items/r/Rain.png", emoji:"🌧️", name:"rain", say:"rain",
    desc:"Water drops falling from clouds."},
-  {key:"robot", emoji:"🤖", name:"robot", say:"robot",
+  {key:"robot", big:"../img/items/r/Robot.png", emoji:"🤖", name:"robot", say:"robot",
    desc:"A machine that can move and talk."},
-  {key:"rope", emoji:"🪢", name:"rope", say:"rope",
+  {key:"rope", big:"../img/items/r/Rope.png", emoji:"🪢", name:"rope", say:"rope",
    desc:"A long thick string for tying."},
-  {key:"river", emoji:"🏞️", name:"river", say:"river",
+  {key:"river", big:"../img/items/r/River.png", emoji:"🏞️", name:"river", say:"river",
    desc:"Water flowing along its path."},
-  {key:"radio", emoji:"📻", name:"radio", say:"radio",
+  {key:"radio", big:"../img/items/r/Radio.png", emoji:"📻", name:"radio", say:"radio",
    desc:"It plays songs and voices from far away."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

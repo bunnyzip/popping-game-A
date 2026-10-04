@@ -126,25 +126,25 @@
 "use strict";
 /* ===================== WORDS ===================== */
 const WORDS = [
-  {key:"nose", emoji:"👃", name:"nose", say:"nose",
+  {key:"nose", big:"../img/items/n/Nose.png", emoji:"👃", name:"nose", say:"nose",
    desc:"You smell flowers with it."},
-  {key:"nut", emoji:"🥜", name:"nut", say:"nut",
+  {key:"nut", big:"../img/items/n/Nut.png", emoji:"🥜", name:"nut", say:"nut",
    desc:"A crunchy shell with a treat inside."},
-  {key:"night", emoji:"🌃", name:"night", say:"night",
+  {key:"night", big:"../img/items/n/Night.png", emoji:"🌃", name:"night", say:"night",
    desc:"When the sky goes dark and stars come out."},
-  {key:"notebook", emoji:"📓", name:"notebook", say:"notebook",
+  {key:"notebook", big:"../img/items/n/Notebook.png", emoji:"📓", name:"notebook", say:"notebook",
    desc:"A book with blank pages for writing."},
-  {key:"needle", emoji:"🪡", name:"needle", say:"needle",
+  {key:"needle", big:"../img/items/n/Needle.png", emoji:"🪡", name:"needle", say:"needle",
    desc:"A sharp thin tool that sews."},
-  {key:"necklace", emoji:"📿", name:"necklace", say:"necklace",
+  {key:"necklace", big:"../img/items/n/Necklace.png", emoji:"📿", name:"necklace", say:"necklace",
    desc:"Pretty beads you wear around your neck."},
-  {key:"nurse", emoji:"👩‍⚕️", name:"nurse", say:"nurse",
+  {key:"nurse", big:"../img/items/n/Nurse.png", emoji:"👩‍⚕️", name:"nurse", say:"nurse",
    desc:"A kind helper who cares for sick people."},
-  {key:"nine", emoji:"9️⃣", name:"nine", say:"nine",
+  {key:"nine", big:"../img/items/n/Nine.png", emoji:"9️⃣", name:"nine", say:"nine",
    desc:"The number after eight."},
-  {key:"newspaper", emoji:"📰", name:"newspaper", say:"newspaper",
+  {key:"newspaper", big:"../img/items/n/Newspaper.png", emoji:"📰", name:"newspaper", say:"newspaper",
    desc:"Printed pages full of news."},
-  {key:"noodles", emoji:"🍜", name:"noodles", say:"noodles",
+  {key:"noodles", big:"../img/items/n/Noodles.png", emoji:"🍜", name:"noodles", say:"noodles",
    desc:"Long slippery strands you slurp."}
 ];
 
@@ -336,9 +336,9 @@ function dirtBurst(holeEl){
 const stage = document.getElementById("stage");
 const stageName = document.getElementById("stageName");
 function showBig(w){
-  stage.innerHTML = `<img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/${
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-")
-  }.svg" alt="">`;
+  const url = w.big || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
+  stage.innerHTML = `<img src="${url}" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
 }

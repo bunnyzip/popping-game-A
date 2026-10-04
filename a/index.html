@@ -62,7 +62,7 @@
   #stage .emojiFallback{position:absolute;inset:0;display:flex;align-items:center;
     justify-content:center;font-size:34vmin;}
   #stage img{position:relative;width:84%;height:84%;margin:8%;background:transparent;
-    filter:drop-shadow(0 10px 14px rgba(0,0,0,.3));animation:wob 2.4s ease-in-out infinite;}
+    filter:drop-shadow(0 10px 14px rgba(0,0,0,.25));animation:wob 2.4s ease-in-out infinite;}
   @keyframes wob{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg) scale(1.06);}}
   #stageName{position:absolute;left:50%;top:calc(12% + 52vmin);transform:translateX(-50%) scale(0);
     background:#fff;color:#7a3fa0;padding:1vmin 3.6vmin;border-radius:999px;font-size:5.6vmin;
@@ -129,25 +129,25 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"apple",     emoji:"🍎", name:"Apple",     say:"Apple",
-   desc:"A sweet, crunchy red, green, or yellow fruit."},
+   desc:"A sweet, crunchy red, green, or yellow fruit.", img:"../img/items/a/Apple.png"},
   {key:"ant",       emoji:"🐜", name:"Ant",       say:"Ant",
-   desc:"A tiny bug that works hard in a line."},
+   desc:"A tiny bug that works hard in a line.", img:"../img/items/a/Ant.png"},
   {key:"airplane",  emoji:"✈️", name:"Airplane",  say:"Airplane",
-   desc:"A big machine that flies high in the sky."},
+   desc:"A big machine that flies high in the sky.", img:"../img/items/a/Airplane.png"},
   {key:"alligator", emoji:"🐊", name:"Alligator", say:"Alligator",
-   desc:"A large animal with big teeth that lives in water."},
+   desc:"A large animal with big teeth that lives in water.", img:"../img/items/a/Alligator.png"},
   {key:"arm",       emoji:"💪", name:"Arm",       say:"Arm",
-   desc:"The part of your body you use to wave hello."},
+   desc:"The part of your body you use to wave hello.", img:"../img/items/a/Arm.png"},
   {key:"axe",       emoji:"🪓", name:"Axe",       say:"Axe",
-   desc:"A tool with a sharp edge for chopping wood."},
+   desc:"A tool with a sharp edge for chopping wood.", img:"../img/items/a/Axe.png"},
   {key:"anchor",    emoji:"⚓", name:"Anchor",    say:"Anchor",
-   desc:"A heavy hook that keeps a boat from floating away."},
+   desc:"A heavy hook that keeps a boat from floating away.", img:"../img/items/a/Anchor.png"},
   {key:"avocado",   emoji:"🥑", name:"Avocado",   say:"Avocado",
-   desc:"A soft green fruit that is yummy and creamy."},
+   desc:"A soft green fruit that is yummy and creamy.", img:"../img/items/a/Avocado.png"},
   {key:"ambulance", emoji:"🚑", name:"Ambulance", say:"Ambulance",
-   desc:"A special van that rushes to help people."},
+   desc:"A special van that rushes to help people.", img:"../img/items/a/Ambulance.png"},
   {key:"art",       emoji:"🎨", name:"Art",       say:"Art",
-   desc:"Beautiful pictures and paintings made with love."},
+   desc:"Beautiful pictures and paintings made with love.", img:"../img/items/a/Art.png"},
 ];;
 
 /* ===================== LAYOUT ===================== */
@@ -297,13 +297,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -343,8 +351,9 @@ function setStageShown(shown){
   stage.style.transform = `${t} scale(${shown?1:0})`;
 }
 function showBig(w){
-  const url = "https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
-    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg";
+  const local = (w.img || "").replace("../", "../");
+  const url = local || ("https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/" +
+    [...w.emoji].map(c=>c.codePointAt(0).toString(16)).join("-") + ".svg");
   stage.innerHTML =
     `<div class="emojiFallback">${w.emoji}</div>
      <img src="${url}" alt="" onerror="this.remove()">`;
@@ -378,7 +387,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

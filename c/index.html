@@ -127,25 +127,25 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"cake", emoji:"🎂", name:"cake", say:"cake",
-   desc:"A soft sweet treat we eat on birthdays."},
+   desc:"A soft sweet treat we eat on birthdays.", img:"../img/items/c/cake.png"},
   {key:"cat", emoji:"🐱", name:"cat", say:"cat",
-   desc:"A soft furry pet that says meow."},
+   desc:"A soft furry pet that says meow.", img:"../img/items/c/cat.png"},
   {key:"car", emoji:"🚗", name:"car", say:"car",
-   desc:"A machine with wheels that drives on roads."},
+   desc:"A machine with wheels that drives on roads.", img:"../img/items/c/car.png"},
   {key:"cow", emoji:"🐄", name:"cow", say:"cow",
-   desc:"A big farm animal that gives us milk."},
+   desc:"A big farm animal that gives us milk.", img:"../img/items/c/cow.png"},
   {key:"cup", emoji:"☕", name:"cup", say:"cup",
-   desc:"A small container we drink from."},
+   desc:"A small container we drink from.", img:"../img/items/c/cup.png"},
   {key:"carrot", emoji:"🥕", name:"carrot", say:"carrot",
-   desc:"A long orange vegetable that rabbits love."},
+   desc:"A long orange vegetable that rabbits love.", img:"../img/items/c/carrot.png"},
   {key:"candle", emoji:"🕯️", name:"candle", say:"candle",
-   desc:"A stick of wax with a flame that glows."},
+   desc:"A stick of wax with a flame that glows.", img:"../img/items/c/candle.png"},
   {key:"cloud", emoji:"☁️", name:"cloud", say:"cloud",
-   desc:"A soft white floater in the sky."},
+   desc:"A soft white floater in the sky.", img:"../img/items/c/cloud.png"},
   {key:"cherry", emoji:"🍒", name:"cherry", say:"cherry",
-   desc:"A tiny round red fruit with a stem."},
+   desc:"A tiny round red fruit with a stem.", img:"../img/items/c/cherry.png"},
   {key:"clock", emoji:"⏰", name:"clock", say:"clock",
-   desc:"It has hands that show us the time."}
+   desc:"It has hands that show us the time.", img:"../img/items/c/clock.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -294,13 +294,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -341,6 +349,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -369,7 +378,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

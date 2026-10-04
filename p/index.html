@@ -127,25 +127,25 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"penguin", emoji:"🐧", name:"penguin", say:"penguin",
-   desc:"A tuxedo bird that waddles and swims."},
+   desc:"A tuxedo bird that waddles and swims.", img:"../img/items/p/penguin.png"},
   {key:"pig", emoji:"🐷", name:"pig", say:"pig",
-   desc:"A pink farm animal that says oink."},
+   desc:"A pink farm animal that says oink.", img:"../img/items/p/pig.png"},
   {key:"pizza", emoji:"🍕", name:"pizza", say:"pizza",
-   desc:"A cheesy round pie with toppings."},
+   desc:"A cheesy round pie with toppings.", img:"../img/items/p/pizza.png"},
   {key:"pencil", emoji:"✏️", name:"pencil", say:"pencil",
-   desc:"You write and draw with it."},
+   desc:"You write and draw with it.", img:"../img/items/p/pencil.png"},
   {key:"pear", emoji:"🍐", name:"pear", say:"pear",
-   desc:"A sweet fruit shaped like a teardrop."},
+   desc:"A sweet fruit shaped like a teardrop.", img:"../img/items/p/pear.png"},
   {key:"pineapple", emoji:"🍍", name:"pineapple", say:"pineapple",
-   desc:"A spiky fruit that is sweet inside."},
+   desc:"A spiky fruit that is sweet inside.", img:"../img/items/p/pineapple.png"},
   {key:"pumpkin", emoji:"🎃", name:"pumpkin", say:"pumpkin",
-   desc:"A big orange gourd for halloween."},
+   desc:"A big orange gourd for halloween.", img:"../img/items/p/pumpkin.png"},
   {key:"panda", emoji:"🐼", name:"panda", say:"panda",
-   desc:"A black and white bear that munches bamboo."},
+   desc:"A black and white bear that munches bamboo.", img:"../img/items/p/panda.png"},
   {key:"plane", emoji:"✈️", name:"plane", say:"plane",
-   desc:"It flies you across the sky."},
+   desc:"It flies you across the sky.", img:"../img/items/p/plane.png"},
   {key:"present", emoji:"🎁", name:"present", say:"present",
-   desc:"A wrapped surprise for someone special."}
+   desc:"A wrapped surprise for someone special.", img:"../img/items/p/present.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -294,13 +294,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -341,6 +349,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -369,7 +378,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

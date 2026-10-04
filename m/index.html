@@ -127,25 +127,25 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"monkey", emoji:"🐵", name:"monkey", say:"monkey",
-   desc:"A playful animal that swings on trees."},
+   desc:"A playful animal that swings on trees.", img:"../img/items/m/monkey.png"},
   {key:"moon", emoji:"🌙", name:"moon", say:"moon",
-   desc:"It glows in the night sky."},
+   desc:"It glows in the night sky.", img:"../img/items/m/moon.png"},
   {key:"milk", emoji:"🥛", name:"milk", say:"milk",
-   desc:"A white drink that comes from cows."},
+   desc:"A white drink that comes from cows.", img:"../img/items/m/milk.png"},
   {key:"mango", emoji:"🥭", name:"mango", say:"mango",
-   desc:"A juicy golden sweet fruit."},
+   desc:"A juicy golden sweet fruit.", img:"../img/items/m/mango.png"},
   {key:"mouse", emoji:"🐭", name:"mouse", say:"mouse",
-   desc:"A tiny squeaky animal with a long tail."},
+   desc:"A tiny squeaky animal with a long tail.", img:"../img/items/m/mouse.png"},
   {key:"mountain", emoji:"⛰️", name:"mountain", say:"mountain",
-   desc:"A giant tall piece of earth you can climb."},
+   desc:"A giant tall piece of earth you can climb.", img:"../img/items/m/mountain.png"},
   {key:"mushroom", emoji:"🍄", name:"mushroom", say:"mushroom",
-   desc:"An umbrella shaped friend of the rain."},
+   desc:"An umbrella shaped friend of the rain.", img:"../img/items/m/mushroom.png"},
   {key:"motorbike", emoji:"🏍️", name:"motorbike", say:"motorbike",
-   desc:"A two wheeler that goes vroom."},
+   desc:"A two wheeler that goes vroom.", img:"../img/items/m/motorbike.png"},
   {key:"map", emoji:"🗺️", name:"map", say:"map",
-   desc:"It shows you the way to places."},
+   desc:"It shows you the way to places.", img:"../img/items/m/map.png"},
   {key:"mitten", emoji:"🧤", name:"mitten", say:"mitten",
-   desc:"A cozy glove without fingers."}
+   desc:"A cozy glove without fingers.", img:"../img/items/m/mitten.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -294,13 +294,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -341,6 +349,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -369,7 +378,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

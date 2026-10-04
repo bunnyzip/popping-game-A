@@ -127,25 +127,25 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"rabbit", emoji:"🐰", name:"rabbit", say:"rabbit",
-   desc:"A fluffy hopper with long ears."},
+   desc:"A fluffy hopper with long ears.", img:"../img/items/r/rabbit.png"},
   {key:"rainbow", emoji:"🌈", name:"rainbow", say:"rainbow",
-   desc:"Seven colors arching across the sky."},
+   desc:"Seven colors arching across the sky.", img:"../img/items/r/rainbow.png"},
   {key:"ring", emoji:"💍", name:"ring", say:"ring",
-   desc:"A shiny circle you wear on your finger."},
+   desc:"A shiny circle you wear on your finger.", img:"../img/items/r/ring.png"},
   {key:"rose", emoji:"🌹", name:"rose", say:"rose",
-   desc:"A beautiful flower with thorns."},
+   desc:"A beautiful flower with thorns.", img:"../img/items/r/rose.png"},
   {key:"rocket", emoji:"🚀", name:"rocket", say:"rocket",
-   desc:"It blasts off into space."},
+   desc:"It blasts off into space.", img:"../img/items/r/rocket.png"},
   {key:"rain", emoji:"🌧️", name:"rain", say:"rain",
-   desc:"Water drops falling from clouds."},
+   desc:"Water drops falling from clouds.", img:"../img/items/r/rain.png"},
   {key:"robot", emoji:"🤖", name:"robot", say:"robot",
-   desc:"A machine that can move and talk."},
+   desc:"A machine that can move and talk.", img:"../img/items/r/robot.png"},
   {key:"rope", emoji:"🪢", name:"rope", say:"rope",
-   desc:"A long thick string for tying."},
+   desc:"A long thick string for tying.", img:"../img/items/r/rope.png"},
   {key:"river", emoji:"🏞️", name:"river", say:"river",
-   desc:"Water flowing along its path."},
+   desc:"Water flowing along its path.", img:"../img/items/r/river.png"},
   {key:"radio", emoji:"📻", name:"radio", say:"radio",
-   desc:"It plays songs and voices from far away."}
+   desc:"It plays songs and voices from far away.", img:"../img/items/r/radio.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -294,13 +294,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -341,6 +349,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -369,7 +378,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

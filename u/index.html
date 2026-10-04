@@ -127,23 +127,23 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"umbrella", emoji:"☂️", name:"umbrella", say:"umbrella",
-   desc:"It keeps the rain off your head."},
+   desc:"It keeps the rain off your head.", img:"../img/items/u/umbrella.png"},
   {key:"unicorn", emoji:"🦄", name:"unicorn", say:"unicorn",
-   desc:"A magical horse with one spiral horn."},
+   desc:"A magical horse with one spiral horn.", img:"../img/items/u/unicorn.png"},
   {key:"up", emoji:"⬆️", name:"up", say:"up",
-   desc:"The way to the sky."},
+   desc:"The way to the sky.", img:"../img/items/u/up.png"},
   {key:"underwear", emoji:"🩲", name:"underwear", say:"underwear",
-   desc:"The clothes you wear under everything."},
+   desc:"The clothes you wear under everything.", img:"../img/items/u/underwear.png"},
   {key:"urn", emoji:"⚱️", name:"urn", say:"urn",
-   desc:"A fancy vase with a lid."},
+   desc:"A fancy vase with a lid.", img:"../img/items/u/urn.png"},
   {key:"utensils", emoji:"🍴", name:"utensils", say:"utensils",
-   desc:"The tools we eat with."},
+   desc:"The tools we eat with.", img:"../img/items/u/utensils.png"},
   {key:"ukulele", emoji:"🪕", name:"ukulele", say:"ukulele",
-   desc:"A tiny happy little guitar."},
+   desc:"A tiny happy little guitar.", img:"../img/items/u/ukulele.png"},
   {key:"universe", emoji:"🌌", name:"universe", say:"universe",
-   desc:"All of space and stars and everything."},
+   desc:"All of space and stars and everything.", img:"../img/items/u/universe.png"},
   {key:"unlock", emoji:"🔓", name:"unlock", say:"unlock",
-   desc:"To open what was locked."}
+   desc:"To open what was locked.", img:"../img/items/u/unlock.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -292,13 +292,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -339,6 +347,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -367,7 +376,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

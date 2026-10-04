@@ -127,25 +127,25 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"sun", emoji:"☀️", name:"sun", say:"sun",
-   desc:"The bright ball of light in the daytime sky."},
+   desc:"The bright ball of light in the daytime sky.", img:"../img/items/s/sun.png"},
   {key:"star", emoji:"⭐", name:"star", say:"star",
-   desc:"A twinkle in the night sky."},
+   desc:"A twinkle in the night sky.", img:"../img/items/s/star.png"},
   {key:"snake", emoji:"🐍", name:"snake", say:"snake",
-   desc:"A legless reptile that slithers."},
+   desc:"A legless reptile that slithers.", img:"../img/items/s/snake.png"},
   {key:"sheep", emoji:"🐑", name:"sheep", say:"sheep",
-   desc:"A woolly farm animal that says baa."},
+   desc:"A woolly farm animal that says baa.", img:"../img/items/s/sheep.png"},
   {key:"shoe", emoji:"👟", name:"shoe", say:"shoe",
-   desc:"You wear it on your foot."},
+   desc:"You wear it on your foot.", img:"../img/items/s/shoe.png"},
   {key:"ship", emoji:"🚢", name:"ship", say:"ship",
-   desc:"A giant boat that sails the seas."},
+   desc:"A giant boat that sails the seas.", img:"../img/items/s/ship.png"},
   {key:"spoon", emoji:"🥄", name:"spoon", say:"spoon",
-   desc:"We use it to sip and scoop."},
+   desc:"We use it to sip and scoop.", img:"../img/items/s/spoon.png"},
   {key:"strawberry", emoji:"🍓", name:"strawberry", say:"strawberry",
-   desc:"A sweet red fruit with tiny seeds outside."},
+   desc:"A sweet red fruit with tiny seeds outside.", img:"../img/items/s/strawberry.png"},
   {key:"sunflower", emoji:"🌻", name:"sunflower", say:"sunflower",
-   desc:"A tall flower that follows the sun."},
+   desc:"A tall flower that follows the sun.", img:"../img/items/s/sunflower.png"},
   {key:"sword", emoji:"⚔️", name:"sword", say:"sword",
-   desc:"A long blade that knights held."}
+   desc:"A long blade that knights held.", img:"../img/items/s/sword.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -294,13 +294,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -341,6 +349,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -369,7 +378,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

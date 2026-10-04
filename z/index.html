@@ -127,17 +127,17 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"zebra", emoji:"🦓", name:"zebra", say:"zebra",
-   desc:"A horse of black and white stripes."},
+   desc:"A horse of black and white stripes.", img:"../img/items/z/zebra.png"},
   {key:"zero", emoji:"0️⃣", name:"zero", say:"zero",
-   desc:"The number for nothing at all."},
+   desc:"The number for nothing at all.", img:"../img/items/z/zero.png"},
   {key:"zucchini", emoji:"🥒", name:"zucchini", say:"zucchini",
-   desc:"A long green vegetable."},
+   desc:"A long green vegetable.", img:"../img/items/z/zucchini.png"},
   {key:"zombie", emoji:"🧟", name:"zombie", say:"zombie",
-   desc:"A spooky make believe walking creature."},
+   desc:"A spooky make believe walking creature.", img:"../img/items/z/zombie.png"},
   {key:"zipper", emoji:"🤐", name:"zipper", say:"zipper",
-   desc:"The teeth that close your jacket."},
+   desc:"The teeth that close your jacket.", img:"../img/items/z/zipper.png"},
   {key:"zigzag", emoji:"➰", name:"zigzag", say:"zigzag",
-   desc:"A line that goes side to side."}
+   desc:"A line that goes side to side.", img:"../img/items/z/zigzag.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -286,13 +286,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -333,6 +341,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -361,7 +370,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

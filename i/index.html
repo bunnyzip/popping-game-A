@@ -127,23 +127,23 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"ice_cream", emoji:"🍦", name:"ice cream", say:"ice cream",
-   desc:"A cold creamy sweet treat in a cone."},
+   desc:"A cold creamy sweet treat in a cone.", img:"../img/items/i/ice_cream.png"},
   {key:"ice", emoji:"🧊", name:"ice", say:"ice",
-   desc:"Frozen water, cold and slippery."},
+   desc:"Frozen water, cold and slippery.", img:"../img/items/i/ice.png"},
   {key:"island", emoji:"🏝️", name:"island", say:"island",
-   desc:"A piece of land surrounded by water."},
+   desc:"A piece of land surrounded by water.", img:"../img/items/i/island.png"},
   {key:"insect", emoji:"🐜", name:"insect", say:"insect",
-   desc:"A tiny bug with six legs."},
+   desc:"A tiny bug with six legs.", img:"../img/items/i/insect.png"},
   {key:"ink", emoji:"🖋️", name:"ink", say:"ink",
-   desc:"The liquid inside a pen."},
+   desc:"The liquid inside a pen.", img:"../img/items/i/ink.png"},
   {key:"igloo", emoji:"🛖", name:"igloo", say:"igloo",
-   desc:"A little house built from snow."},
+   desc:"A little house built from snow.", img:"../img/items/i/igloo.png"},
   {key:"idea", emoji:"💡", name:"idea", say:"idea",
-   desc:"A bright thought in your head."},
+   desc:"A bright thought in your head.", img:"../img/items/i/idea.png"},
   {key:"invitation", emoji:"💌", name:"invitation", say:"invitation",
-   desc:"A card that asks you to a party."},
+   desc:"A card that asks you to a party.", img:"../img/items/i/invitation.png"},
   {key:"instrument", emoji:"🎻", name:"instrument", say:"instrument",
-   desc:"Something you play to make music."}
+   desc:"Something you play to make music.", img:"../img/items/i/instrument.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -292,13 +292,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -339,6 +347,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -367,7 +376,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

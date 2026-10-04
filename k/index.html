@@ -127,23 +127,23 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"kite", emoji:"🪁", name:"kite", say:"kite",
-   desc:"It dances in the wind on a string."},
+   desc:"It dances in the wind on a string.", img:"../img/items/k/kite.png"},
   {key:"key", emoji:"🔑", name:"key", say:"key",
-   desc:"A little metal tool that opens locks."},
+   desc:"A little metal tool that opens locks.", img:"../img/items/k/key.png"},
   {key:"king", emoji:"👑", name:"king", say:"king",
-   desc:"A ruler with a golden crown."},
+   desc:"A ruler with a golden crown.", img:"../img/items/k/king.png"},
   {key:"kangaroo", emoji:"🦘", name:"kangaroo", say:"kangaroo",
-   desc:"It hops with a baby in its pouch."},
+   desc:"It hops with a baby in its pouch.", img:"../img/items/k/kangaroo.png"},
   {key:"kiwi", emoji:"🥝", name:"kiwi", say:"kiwi",
-   desc:"A fuzzy brown fruit, green inside."},
+   desc:"A fuzzy brown fruit, green inside.", img:"../img/items/k/kiwi.png"},
   {key:"kitten", emoji:"🐱", name:"kitten", say:"kitten",
-   desc:"A baby cat, small and sweet."},
+   desc:"A baby cat, small and sweet.", img:"../img/items/k/kitten.png"},
   {key:"kitchen", emoji:"🍳", name:"kitchen", say:"kitchen",
-   desc:"The room where food is cooked."},
+   desc:"The room where food is cooked.", img:"../img/items/k/kitchen.png"},
   {key:"keyboard", emoji:"⌨️", name:"keyboard", say:"keyboard",
-   desc:"The board of keys you type on."},
+   desc:"The board of keys you type on.", img:"../img/items/k/keyboard.png"},
   {key:"koala", emoji:"🐨", name:"koala", say:"koala",
-   desc:"A fuzzy gray animal that sleeps in trees."}
+   desc:"A fuzzy gray animal that sleeps in trees.", img:"../img/items/k/koala.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -292,13 +292,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -339,6 +347,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -367,7 +376,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

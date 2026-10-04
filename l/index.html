@@ -127,25 +127,25 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"lion", emoji:"🦁", name:"lion", say:"lion",
-   desc:"The king of the jungle with a big mane."},
+   desc:"The king of the jungle with a big mane.", img:"../img/items/l/lion.png"},
   {key:"leaf", emoji:"🍃", name:"leaf", say:"leaf",
-   desc:"The green flutter of a tree."},
+   desc:"The green flutter of a tree.", img:"../img/items/l/leaf.png"},
   {key:"lemon", emoji:"🍋", name:"lemon", say:"lemon",
-   desc:"A sour yellow fruit."},
+   desc:"A sour yellow fruit.", img:"../img/items/l/lemon.png"},
   {key:"lamp", emoji:"💡", name:"lamp", say:"lamp",
-   desc:"It glows and lights your room."},
+   desc:"It glows and lights your room.", img:"../img/items/l/lamp.png"},
   {key:"lollipop", emoji:"🍭", name:"lollipop", say:"lollipop",
-   desc:"Candy on a stick you lick."},
+   desc:"Candy on a stick you lick.", img:"../img/items/l/lollipop.png"},
   {key:"lock", emoji:"🔒", name:"lock", say:"lock",
-   desc:"It keeps a door closed tight."},
+   desc:"It keeps a door closed tight.", img:"../img/items/l/lock.png"},
   {key:"lizard", emoji:"🦎", name:"lizard", say:"lizard",
-   desc:"A scaly little reptile that scurries."},
+   desc:"A scaly little reptile that scurries.", img:"../img/items/l/lizard.png"},
   {key:"leg", emoji:"🦵", name:"leg", say:"leg",
-   desc:"You run and jump on it."},
+   desc:"You run and jump on it.", img:"../img/items/l/leg.png"},
   {key:"lips", emoji:"👄", name:"lips", say:"lips",
-   desc:"They smile and kiss."},
+   desc:"They smile and kiss.", img:"../img/items/l/lips.png"},
   {key:"log", emoji:"🪵", name:"log", say:"log",
-   desc:"A big chunk of a tree trunk."}
+   desc:"A big chunk of a tree trunk.", img:"../img/items/l/log.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -294,13 +294,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -341,6 +349,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -369,7 +378,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

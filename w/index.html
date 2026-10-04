@@ -127,25 +127,25 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"water", emoji:"💧", name:"water", say:"water",
-   desc:"The clear drink that all life needs."},
+   desc:"The clear drink that all life needs.", img:"../img/items/w/water.png"},
   {key:"whale", emoji:"🐳", name:"whale", say:"whale",
-   desc:"The biggest animal in the whole ocean."},
+   desc:"The biggest animal in the whole ocean.", img:"../img/items/w/whale.png"},
   {key:"wolf", emoji:"🐺", name:"wolf", say:"wolf",
-   desc:"A wild animal that howls at the moon."},
+   desc:"A wild animal that howls at the moon.", img:"../img/items/w/wolf.png"},
   {key:"watch", emoji:"⌚", name:"watch", say:"watch",
-   desc:"A tiny clock on your wrist."},
+   desc:"A tiny clock on your wrist.", img:"../img/items/w/watch.png"},
   {key:"watermelon", emoji:"🍉", name:"watermelon", say:"watermelon",
-   desc:"A giant green fruit, pink and juicy inside."},
+   desc:"A giant green fruit, pink and juicy inside.", img:"../img/items/w/watermelon.png"},
   {key:"wind", emoji:"🌬️", name:"wind", say:"wind",
-   desc:"You cannot see it but you feel it move."},
+   desc:"You cannot see it but you feel it move.", img:"../img/items/w/wind.png"},
   {key:"wheel", emoji:"⚙️", name:"wheel", say:"wheel",
-   desc:"A round part that turns and rolls."},
+   desc:"A round part that turns and rolls.", img:"../img/items/w/wheel.png"},
   {key:"wand", emoji:"🪄", name:"wand", say:"wand",
-   desc:"A magic stick that grants wishes."},
+   desc:"A magic stick that grants wishes.", img:"../img/items/w/wand.png"},
   {key:"web", emoji:"🕸️", name:"web", say:"web",
-   desc:"A sticky net a spider weaves."},
+   desc:"A sticky net a spider weaves.", img:"../img/items/w/web.png"},
   {key:"wood", emoji:"🪵", name:"wood", say:"wood",
-   desc:"The hard stuff trees are made of."}
+   desc:"The hard stuff trees are made of.", img:"../img/items/w/wood.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -294,13 +294,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -341,6 +349,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -369,7 +378,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

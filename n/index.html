@@ -127,25 +127,25 @@
 /* ===================== WORDS ===================== */
 const WORDS = [
   {key:"nose", emoji:"👃", name:"nose", say:"nose",
-   desc:"You smell flowers with it."},
+   desc:"You smell flowers with it.", img:"../img/items/n/nose.png"},
   {key:"nut", emoji:"🥜", name:"nut", say:"nut",
-   desc:"A crunchy shell with a treat inside."},
+   desc:"A crunchy shell with a treat inside.", img:"../img/items/n/nut.png"},
   {key:"night", emoji:"🌃", name:"night", say:"night",
-   desc:"When the sky goes dark and stars come out."},
+   desc:"When the sky goes dark and stars come out.", img:"../img/items/n/night.png"},
   {key:"notebook", emoji:"📓", name:"notebook", say:"notebook",
-   desc:"A book with blank pages for writing."},
+   desc:"A book with blank pages for writing.", img:"../img/items/n/notebook.png"},
   {key:"needle", emoji:"🪡", name:"needle", say:"needle",
-   desc:"A sharp thin tool that sews."},
+   desc:"A sharp thin tool that sews.", img:"../img/items/n/needle.png"},
   {key:"necklace", emoji:"📿", name:"necklace", say:"necklace",
-   desc:"Pretty beads you wear around your neck."},
+   desc:"Pretty beads you wear around your neck.", img:"../img/items/n/necklace.png"},
   {key:"nurse", emoji:"👩‍⚕️", name:"nurse", say:"nurse",
-   desc:"A kind helper who cares for sick people."},
+   desc:"A kind helper who cares for sick people.", img:"../img/items/n/nurse.png"},
   {key:"nine", emoji:"9️⃣", name:"nine", say:"nine",
-   desc:"The number after eight."},
+   desc:"The number after eight.", img:"../img/items/n/nine.png"},
   {key:"newspaper", emoji:"📰", name:"newspaper", say:"newspaper",
-   desc:"Printed pages full of news."},
+   desc:"Printed pages full of news.", img:"../img/items/n/newspaper.png"},
   {key:"noodles", emoji:"🍜", name:"noodles", say:"noodles",
-   desc:"Long slippery strands you slurp."}
+   desc:"Long slippery strands you slurp.", img:"../img/items/n/noodles.png"}
 ];
 
 /* ===================== LAYOUT ===================== */
@@ -294,13 +294,21 @@ function playClip(key, fallbackText, opts={}, onEnd=null){
   duckMusic(true);
   const a = CLIPS[key];
   if(!a){ speak(fallbackText, opts, onEnd); return; }
-  let fired = false;
-  const fin = ()=>{ if(fired) return; fired = true; duckMusic(false); if(onEnd) onEnd(); };
-  a.onended = fin; a.onerror = ()=> speak(fallbackText, opts, onEnd);
+  let fired = false, finished = false, started = false;
+  const fin = ()=>{ if(fired) return; fired = true; finished = true;
+    a.onended = null; duckMusic(false); if(onEnd) onEnd(); };
+  const fallback = ()=>{ if(finished) return; finished = true;
+    try{ a.pause(); }catch(e){}
+    speak(fallbackText, opts, onEnd); };
+  a.onended = fin; a.onerror = fallback;
   const est = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+700 : 3800;
-  setTimeout(fin, est);
+  const hardStop = setTimeout(fallback, est);
   const pr = a.play();
-  if(pr) pr.catch(()=> speak(fallbackText, opts, onEnd));
+  if(pr) pr.then(()=>{ started = true; clearTimeout(hardStop);
+      /* real duration now known */
+      const est2 = isFinite(a.duration)&&a.duration>0 ? a.duration*1000+500 : 4000;
+      setTimeout(fin, est2);
+    }).catch(()=>{ if(!started) fallback(); });
 }
 const ding = ()=>{ if(actx){ note(880,actx.currentTime,.3,"sine",.6); note(1318,actx.currentTime+.08,.4,"sine",.5);} };
 
@@ -341,6 +349,7 @@ function showBig(w){
   }.svg" alt="">`;
   stageName.textContent = w.name;
   stage.classList.add("show"); stageName.classList.add("show");
+  document.querySelectorAll(".label.show").forEach(l=>l.classList.remove("show"));
 }
 function hideBig(){ stage.classList.remove("show"); stageName.classList.remove("show"); }
 
@@ -369,7 +378,8 @@ function popWord(){
   h.el.classList.add("rumble");
   setTimeout(()=>{
     h.el.classList.remove("rumble");
-    h.item.textContent = w.emoji;
+    if(w.img){ h.item.innerHTML = `<img src="${w.img}" style="width:100%;height:auto;pointer-events:none" draggable="false">`; }
+    else { h.item.textContent = w.emoji; }
     h.item.classList.add("up");
     dirtBurst(h.el);
   }, 420);

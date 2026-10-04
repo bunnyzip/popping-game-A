@@ -28,7 +28,7 @@
   .hole .lip{clip-path:inset(48% 0 0 0);z-index:6;}
   .popWrap{position:absolute;left:4%;right:4%;top:-78%;bottom:52%;
     overflow:hidden;z-index:5;display:flex;align-items:flex-end;justify-content:center;}
-  .item{line-height:1;cursor:pointer;user-select:none;will-change:transform;
+  .item{position:relative;line-height:1;cursor:pointer;user-select:none;will-change:transform;
     display:flex;align-items:flex-end;justify-content:center;
     transform:translateY(130%);transition:transform .6s cubic-bezier(.3,1.4,.5,1);
     filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));}
@@ -177,6 +177,9 @@ function buildHoles(){
   /* item size follows hole size */
   document.querySelectorAll(".item").forEach(el=>{ el.style.fontSize = hw*cfg.itemScale + "px"; });
   stagePos();
+}
+function preloadItemImages(){
+  WORDS.forEach(w=>{ if(w.img){ const i=new Image(); i.src=w.img + "?v=3"; } });
 }
 function stagePos(){
   const st = document.getElementById("stage");
@@ -398,7 +401,7 @@ function endRound(h){
 document.getElementById("playBtn").addEventListener("click", ()=>{
   document.getElementById("start").style.display = "none";
   ensureAudio(); playMusic(); preloadClips();
-  playing = true; updateStars();
+  playing = true; updateStars(); preloadItemImages();
   playClip("intro", "Today we will learn the letter A.", {});
   setTimeout(popWord, 3400);
 });

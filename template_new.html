@@ -106,12 +106,13 @@
 </head>
 <body>
 <div id="game">
-  <img id="bg" src="../img/bg_portrait.png" alt="">
+  <img id="bg" src="../img/bg_portrait.png?v=3" alt="">
   <div id="holes"></div>
 
   <div id="bigA">A a</div>
   <div id="starBar"></div>
   <button id="muteBtn" title="Music on/off">🎵</button>
+  <div id="verTag" style="position:absolute;left:50%;bottom:0.2vmin;transform:translateX(-50%);font-size:2.2vmin;color:#888;z-index:11;">build v3</div>
   <div id="chipBar"></div>
   <div id="stage"></div>
   <div id="stageName"></div>
@@ -133,17 +134,17 @@ __WORDS_ARRAY__;
 const holesBox = document.getElementById("holes");
 const bgEl     = document.getElementById("bg");
 const isLand   = () => matchMedia("(orientation:landscape) and (min-width:900px)").matches;
-const HOLE_IMG = "../img/hole1.png";
+const HOLE_IMG = "../img/hole1.png?v=3";
 
 /* hole grid as fractions of the grass area (fx, fy of full screen) */
 function gridConfig(){
   if(isLand()) return {
-    bg:"../img/bg_landscape.png",
+    bg:"../img/bg_landscape.png?v=3",
     pos:[[44,34],[61,34],[78,34],[44,55],[61,55],[78,55],[44,75],[61,75],[78,75]],
     holeW:0.125, itemScale:0.55
   };
   return {
-    bg:"../img/bg_portrait.png",
+    bg:"../img/bg_portrait.png?v=3",
     pos:[[16,56],[50,56],[84,56],[16,68],[50,68],[84,68],[16,80],[50,80],[84,80]],
     holeW:0.25, itemScale:0.50
   };
